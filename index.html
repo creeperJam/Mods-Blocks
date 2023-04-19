@@ -4,11 +4,27 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>API di Minecraft</title>
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+    <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
-    <h2>Buongiorno</h2>
+    <h2>Minecraft API per cercare un blocco e visualizzarne le relative informazioni</h2>
+
+    <div class="wrapper">
+        <div class="inputGioco">
+            <p class="vuoto"></p>
+            <label for="nomeBlocco" style="width:5%">Blocco: </label>
+            <input type="text" id="nomeBlocco" name="nomeBlocco">
+            <p class="vuoto"></p>
+        </div>
+
+        <div id="autocomplete-list">
+            <p>Salve</p>
+        </div>
+    </div>
+
+    <script src="js/index.js"></script>
 </body>
 </html>

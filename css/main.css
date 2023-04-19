@@ -1,0 +1,21 @@
+.wrapper {
+    display: table;
+    margin: 0;
+    width: 100%;
+}
+.wrapper > * {
+    display: table-row;
+}
+
+.wrapper > div > * {
+    display: table-cell;
+    margin: 5px;
+}
+
+.vuoto {
+    width: 25%;
+}
+
+h2 {
+    text-align: center;
+}
