@@ -12,17 +12,17 @@
 <body>
     <h2>Minecraft API per cercare un blocco e visualizzarne le relative informazioni</h2>
 
-    <div class="wrapper">
+    <div class="wrapper-input">
         <div class="inputGioco">
             <p class="vuoto"></p>
-            <label for="nomeBlocco" style="width:5%">Blocco: </label>
+            <label for="nomeBlocco" class="primaColonna">Blocco: </label>
             <input type="text" id="nomeBlocco" name="nomeBlocco">
             <p class="vuoto"></p>
         </div>
+    </div>
 
-        <div id="autocomplete-list">
-            <p>Salve</p>
-        </div>
+    <div id="autocomplete-list" class="autocomplete-items">
+            
     </div>
 
     <script src="js/index.js"></script>

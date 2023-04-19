@@ -15,18 +15,20 @@ const linkApi = "https://minecraft-api.vercel.app/api";
 // fields=%5B%22name%22%2C%22image%22%2C%22stackSize%22%5D --> ["name", "image", "stackSize"] --> campi da visualizzare
 // stackSize=64 --> numero di blocchi per stack
 
+// TODO: aggiungere il grassetto alla parte già scritta e permettere di selezionare il blocco desiderato e 
+//          di essere recati alla pagina del blocco (creata sul momento tramite html vuoto che riceve le informazioni del blocco selezionato)
 
 const cercaBlocchi = "/items/";
 let debounceTimeout = 0;
 function cercaBlocco() {
-    clearTimeout(debounceTimeout)
-    debounceTimeout = setTimeout(() => {
+    clearTimeout(debounceTimeout);
+    debounceTimeout = setTimeout(async () => {
         let risultati = new Array();
         let pattern = new RegExp("^" + inputNomeBlocco.value, "i");
 
-        fetch(linkApi + cercaBlocchi).then((response) => response.json()).then((data) => {
+        await fetch(linkApi + cercaBlocchi).then((response) => response.json()).then((data) => {
             data.forEach(element => {
-                if (pattern.test(element['name']) == true) risultati.push(element['name']);
+                if (pattern.test(element['name']) == true) risultati.push(element);
             });
         });
 
@@ -36,18 +38,33 @@ function cercaBlocco() {
     }, 1000)
 }
 
+
+let currentFocus = 0;
 function suggerimenti(arr) {
     let div = document.getElementById('autocomplete-list');
-    div.setAttribute("class", "autocomplete-items");
+    div.innerHTML = "";
 
-    arr.forEach(element => {
+    if (arr.length == 0) {
         let suggerimento = document.createElement('DIV');
-        suggerimento.innerHTML = "<strong>" + element.substr(0, val.length) + "</strong>";
-        suggerimento.innerHTML += element.substr(val.length);
-        suggerimento.innerHTML += "<input type='hidden' value='" + element + "'>";
+        suggerimento.innerHTML = "<strong>Nessun elemento trovato per la query inserita</strong>";
 
         div.appendChild(suggerimento);
-    })
+    } else {
+        let n = arr.length > 10 ? 10 : arr.length;
+        for (let i = 0; i < n; i++) {
+            let suggerimento = document.createElement('DIV');
+            suggerimento.setAttribute("class", "autocomplete-item");
+
+            suggerimento.innerHTML = "<p class='vuoto'></p>";
+            suggerimento.innerHTML += "<p class='primaColonna'></p>";
+            // suggerimento.innerHTML = "<strong>" + element['name'].substr(0, val.length) + "</strong>";
+            suggerimento.innerHTML += "<input style='margin-top: 0; margin-bottom: 0; height: 75%; border-radius: 0' type='text' value='" + arr[i]['name'] + "' readonly>";
+
+            suggerimento.innerHTML += "<p class='vuoto'></p>";
+
+            div.appendChild(suggerimento);
+        }
+    }
 }
 
 function autocomplete(inp, arr) {
