@@ -1,35 +1,42 @@
-.wrapper-input, #autocomplete-list {
-    display: table;
-    margin: 0;
-    width: 100%;
+.wrapper-input,
+#autocomplete-list {
+  display: table;
+  margin: 0;
+  width: 100%;
 }
-.wrapper-input > *, #autocomplete-list > * {
-    display: table-row;
+.wrapper-input > *,
+#autocomplete-list > * {
+  display: table-row;
 }
 
-.wrapper-input > div > *, #autocomplete-list > div > * {
-    display: table-cell;
-    margin: 5px;
+.wrapper-input > div > *,
+#autocomplete-list > div > * {
+  display: table-cell;
 }
 
 .vuoto {
-    width: 25%;
+  width: 25%;
 }
 
 .primaColonna {
-    width: 5%;
-}
-
-#autocomplete-list > div > * {
-    padding: 5px;
-    padding-left: var(--form-element-spacing-horizontal);
+  width: 5%;
 }
 
 h2 {
-    text-align: center;
+  text-align: center;
 }
 
-input {
-    margin-top: 0 !important;
-    margin-bottom: 0 !important;
+input:hover, span:hover {
+    border-color: var(--primary);
+}
+
+span {
+    border: 1px solid var(--form-element-border-color);
+    border-radius: 1px;
+    padding: 15px 20px;
+    cursor: pointer;
+}
+
+input, span {
+  margin: 0 !important;
 }

@@ -1,8 +1,10 @@
 let inputNomeBlocco = document.getElementById("nomeBlocco");
-
+let span = document.getElementById("grassetto");
 
 
 inputNomeBlocco.addEventListener("keyup", cercaBlocco, false);
+// inputNomeBlocco.addEventListener("click", function (e) {}, false);
+// inputNomeBlocco.addEventListener("submit", apriPaginaBlocco ,false);
 const linkApi = "https://minecraft-api.vercel.app/api";
 
 
@@ -15,8 +17,7 @@ const linkApi = "https://minecraft-api.vercel.app/api";
 // fields=%5B%22name%22%2C%22image%22%2C%22stackSize%22%5D --> ["name", "image", "stackSize"] --> campi da visualizzare
 // stackSize=64 --> numero di blocchi per stack
 
-// TODO: aggiungere il grassetto alla parte già scritta e permettere di selezionare il blocco desiderato e 
-//          di essere recati alla pagina del blocco (creata sul momento tramite html vuoto che riceve le informazioni del blocco selezionato)
+// TODO: aggiungere il grassetto alla parte già scritta
 
 const cercaBlocchi = "/items/";
 let debounceTimeout = 0;
@@ -24,7 +25,7 @@ function cercaBlocco() {
     clearTimeout(debounceTimeout);
     debounceTimeout = setTimeout(async () => {
         let risultati = new Array();
-        let pattern = new RegExp("^" + inputNomeBlocco.value, "i");
+        let pattern = new RegExp('\\b.*' + inputNomeBlocco.value + '.*\\b', "i");
 
         await fetch(linkApi + cercaBlocchi).then((response) => response.json()).then((data) => {
             data.forEach(element => {
@@ -35,7 +36,7 @@ function cercaBlocco() {
         console.log(risultati);
 
         suggerimenti(risultati);
-    }, 1000)
+    }, 500)
 }
 
 
@@ -46,23 +47,53 @@ function suggerimenti(arr) {
 
     if (arr.length == 0) {
         let suggerimento = document.createElement('DIV');
-        suggerimento.innerHTML = "<strong>Nessun elemento trovato per la query inserita</strong>";
+        suggerimento.setAttribute("class", "autocomplete-item");
+
+        suggerimento.innerHTML = "<p class='vuoto'></p> <p class='primaColonna'></p>";
+        suggerimento.innerHTML += "<strong>Nessun elemento trovato per la query inserita</strong>";
+        suggerimento.innerHTML += "<p class='vuoto'></p>";
+
+        suggerimento.addEventListener("click", closeAllLists, false);
 
         div.appendChild(suggerimento);
     } else {
         let n = arr.length > 10 ? 10 : arr.length;
         for (let i = 0; i < n; i++) {
+            let inizioStringa = arr[i]['name'].toLowerCase().indexOf(inputNomeBlocco.value.toLowerCase());
+            console.log(arr[i]['name'])
+            console.log(inizioStringa + " - InizioStringa");
             let suggerimento = document.createElement('DIV');
             suggerimento.setAttribute("class", "autocomplete-item");
+            suggerimento.setAttribute("value", arr[i]['name']);
+            let testoSuggerimento = document.createElement('span');
 
-            suggerimento.innerHTML = "<p class='vuoto'></p>";
-            suggerimento.innerHTML += "<p class='primaColonna'></p>";
-            // suggerimento.innerHTML = "<strong>" + element['name'].substr(0, val.length) + "</strong>";
-            suggerimento.innerHTML += "<input style='margin-top: 0; margin-bottom: 0; height: 75%; border-radius: 0' type='text' value='" + arr[i]['name'] + "' readonly>";
+            suggerimento.innerHTML = "<p class='vuoto'></p> <p class='primaColonna'></p>";
+            testoSuggerimento.innerHTML += arr[i]['name'].substr(0, inizioStringa);
+            testoSuggerimento.innerHTML += "<strong>" + arr[i]['name'].substr(inizioStringa, inputNomeBlocco.value.length) + "</strong>";
+            testoSuggerimento.innerHTML += arr[i]['name'].substr(inizioStringa+inputNomeBlocco.value.length, );
+            // testoSuggerimento.innerHTML += "<input style='margin-top: 0; margin-bottom: 0; height: 75%; border-radius: 0' type='text' value='" + arr[i]['name'] + "' readonly>";
 
+            testoSuggerimento.addEventListener("click", apriPaginaBlocco, false);
+            suggerimento.addEventListener("click", closeAllLists, false);
+
+            suggerimento.appendChild(testoSuggerimento);
             suggerimento.innerHTML += "<p class='vuoto'></p>";
-
             div.appendChild(suggerimento);
+        }
+    }
+
+    function apriPaginaBlocco() {
+        console.log(this.value);
+        let nomeBlocco = this.value.replace(/\s/g, '+');
+        let link = window.location.href + "blocco.html" + "?" + nomeBlocco;
+        window.location.href = link;
+    }
+
+    function closeAllLists() {
+        let div = document.getElementById("autocomplete-list");
+        let children = div.childNodes, n = children.length;
+        for (let i = 0; i < n; i++) {
+            div.removeChild(children[0]);
         }
     }
 }
