@@ -4,13 +4,14 @@
   margin: 0;
   width: 100%;
 }
-.wrapper-input > *,
-#autocomplete-list > * {
+
+.wrapper-input>*,
+#autocomplete-list>* {
   display: table-row;
 }
 
-.wrapper-input > div > *,
-#autocomplete-list > div > * {
+.wrapper-input>div>*,
+#autocomplete-list>div>* {
   display: table-cell;
 }
 
@@ -34,20 +35,32 @@ label {
   display: none;
 }
 
-input:hover, span:hover, span:focus {
-    border-color: var(--primary);
-    background-color: var(--primary);
-    color: white;
+#nomeBlocco {
+  border-radius: var(--border-radius) var(--border-radius) 0 0;
+}
+
+input:hover,
+span:hover {
+  border-color: var(--primary);
+  background-color: var(--primary);
+  color: white;
+}
+
+.spanFocus {
+  border-color: var(--primary);
+  background-color: var(--primary);
+  color: white;
 }
 
 span {
-    border: 1px solid var(--form-element-border-color);
-    border-radius: 1px;
-    padding: 15px 20px;
-    cursor: pointer;
+  border: 1px solid var(--form-element-border-color);
+  border-radius: 1px;
+  padding: 15px 20px;
+  cursor: pointer;
 }
 
-input, span {
+input,
+span {
   margin: 0 !important;
 }
 
@@ -63,7 +76,8 @@ input, span {
 
 
 
-::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+::placeholder {
+  /* Chrome, Firefox, Opera, Safari 10.1+ */
   color: white !important;
   opacity: 0.8 !important;
 }
