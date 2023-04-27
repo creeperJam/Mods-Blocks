@@ -1,54 +1,66 @@
-let inputNomeBlocco = document.getElementById("nomeBlocco");
-let span = document.getElementById("grassetto");
-let descrizione =
+// Variabili/Costanti
+let inputNomeMod = document.getElementById("nomeMod");
+const linkApiCurseForge = "https://api.curseforge.com";
+const apiKey = "$2a$10$bfD0D0C.HJ.DPma2VLUitO7luPMA0EmnJH8f8I7mocgmlbLKOI4r.";
 
-    inputNomeBlocco.addEventListener("keyup", cercaBlocco, false);
-// inputNomeBlocco.addEventListener("submit", mostraInfoBlocco ,false);
-const linkApiListBlocchi = "https://minecraft-api.vercel.app/api";
-const linkWiki = "https://minecraft.fandom.com/wiki/nomeOggetto?so=search"; // "https://minecraft.fandom.com/wiki/NomeBlocco?so=search" - inutilizzabile
-const linkApiImmagini = "http://209.38.242.254:6969/x800/nomeOggetto.png"; 
+// Event Listeners
+inputNomeMod.addEventListener("keyup", cercaMod, false);
 
-// Spiegazione link: https://minecraft.fandom.com/wiki/Iron_Ingot?so=search - inutilizzabile
-// Iron_Ingot --> nome del blocco (replace("nomeOggetto", nomeBlocco)) con "_" al posto degli spazi
-// ?so=search --> ricerca (FISSO)
 
-// Spiegazione link -> http://209.38.242.254:6969/x800/nomeOggetto.png
-// nomeOggetto --> nome del blocco (replace("nomeOggetto", nomeBlocco)) con "_" al posto degli spazi
+// Spiegazione api usate:
 
-// Link con spiegazione: https://minecraft-api.vercel.app/api/items?limit=25&page=2&sort=name&order=asc&fields=%5B%22name%22%2C%22image%22%2C%22stackSize%22%5D&stackSize=64
-// 
-// limit=25 --> numero massimo di risultati della ricerca
-// page=2 --> pagina della ricerca
-// sort=name --> ordina per nome
-// order=asc --> ordina in ordine crescente
-// fields=%5B%22name%22%2C%22image%22%2C%22stackSize%22%5D --> ["name", "image", "stackSize"] --> campi da visualizzare
-// stackSize=64 --> numero di blocchi per stack
+// https://docs.curseforge.com - Chiave API: $2a$10$bfD0D0C.HJ.DPma2VLUitO7luPMA0EmnJH8f8I7mocgmlbLKOI4r.
+// Spiegazione link curseForge: "https://api.curseforge.com/service"
+// Servizi offerti:
+//   GET /v1/games/ 
 
-const cercaBlocchi = "/items/";
+const headers = {
+    'Accept': 'application/json',
+    'x-api-key': apiKey
+};
+
+// let x = fetch(linkApiCurseForge + '/v1/games',
+// {
+//     method: 'GET',
+//     headers: headers
+// }).then(result => result.json())
+// .then((responseJson) => { return responseJson })
+
+
+const getMods = "/v1/mods/search"; // + gameId + "&searchFilter=" + inputNomeMod.value + "&pageSize=10&pageIndex=0
+let gameId = 432; // default: 432 (Minecraft) - TODO: aggiungere la possibilità di scegliere il gioco
 let debounceTimeout = 0;
 let vecchioInput = "";
 let risultati = new Array();
-function cercaBlocco(e) {
+function cercaMod() {
     risultati = new Array();
-    if (vecchioInput != inputNomeBlocco.value) {
+    if (vecchioInput != inputNomeMod.value) {
         clearTimeout(debounceTimeout);
         debounceTimeout = setTimeout(async () => {
-            let pattern = new RegExp('^' + inputNomeBlocco.value + '.*\\b', "i");
-
-            await fetch(linkApiListBlocchi + cercaBlocchi).then((response) => response.json()).then((data) => {
-                data.forEach(element => {
-                    if (pattern.test(element['name']) == true) risultati.push(element);
+            let pattern = new RegExp('^' + inputNomeMod.value + '.*\\b', "i");
+            let linkFetch = linkApiCurseForge + getMods + "?gameId=" + gameId + "&searchFilter=" + inputNomeMod.value;
+            await fetch(linkFetch,
+                {
+                    method: 'GET',
+                    headers: headers
+                })
+                .then((response) => response.json())
+                .then((responseJson) => responseJson.data)
+                .then((data) => {
+                    console.log("E fin qui ci siamo");
+                    data.forEach(element => {
+                        if (pattern.test(element['name']) == true) risultati.push(element);
+                    });
                 });
-            });
 
-            // console.log(risultati);
+            console.log(risultati);
 
             suggerimenti(risultati);
         }, 350)
-        vecchioInput = inputNomeBlocco.value;
+        vecchioInput = inputNomeMod.value;
     }
 
-    if (inputNomeBlocco.value.length == 0) {
+    if (inputNomeMod.value.length == 0) {
         document.getElementById('autocomplete-list').innerHTML = "";
     }
 }
@@ -76,7 +88,7 @@ function suggerimenti(arr) {
     } else {
         let n = arr.length > 10 ? 10 : arr.length;
         for (let i = 0; i < n; i++) {
-            let inizioStringa = arr[i]['name'].toLowerCase().indexOf(inputNomeBlocco.value.toLowerCase()); // Indice in cui inizia la stringa cercata
+            let inizioStringa = arr[i]['name'].toLowerCase().indexOf(inputNomeMod.value.toLowerCase()); // Indice in cui inizia la stringa cercata
             let suggerimento = document.createElement('DIV'); // Div che contiene il suggerimento
             let testoSuggerimento = document.createElement('span') // Span che contiene il testo del suggerimento
 
@@ -88,8 +100,8 @@ function suggerimenti(arr) {
 
             suggerimento.innerHTML = "<p class='vuoto'></p> <p class='primaColonna' style='color: rgba(0, 0, 0, 0)'>Oggetto: </p>";
             testoSuggerimento.innerHTML += arr[i]['name'].substr(0, inizioStringa);
-            testoSuggerimento.innerHTML += "<strong>" + arr[i]['name'].substr(inizioStringa, inputNomeBlocco.value.length) + "</strong>";
-            testoSuggerimento.innerHTML += arr[i]['name'].substr(inizioStringa + inputNomeBlocco.value.length);
+            testoSuggerimento.innerHTML += "<strong>" + arr[i]['name'].substr(inizioStringa, inputNomeMod.value.length) + "</strong>";
+            testoSuggerimento.innerHTML += arr[i]['name'].substr(inizioStringa + inputNomeMod.value.length);
             // testoSuggerimento.innerHTML += "<input style='margin-top: 0; margin-bottom: 0; height: 75%; border-radius: 0' type='text' value='" + arr[i]['name'] + "' readonly>";
 
             // testoSuggerimento.addEventListener("click", mostraInfoBlocco, false);
@@ -117,7 +129,7 @@ function aggiungiEventListener() {
 }
 
 function clickItem() {
-    inputNomeBlocco.value = this.getAttribute('value');
+    inputNomeMod.value = this.getAttribute('value');
 }
 
 function closeAllLists() {
@@ -136,7 +148,7 @@ function focus(element) {
     element.setAttribute("class", "spanFocus");
 }
 
-inputNomeBlocco.addEventListener("keyup", function (e) {
+inputNomeMod.addEventListener("keyup", function (e) {
     let divs = document.getElementById('autocomplete-list').children;
     let tastoPremuto = e.code;
 
@@ -154,7 +166,7 @@ inputNomeBlocco.addEventListener("keyup", function (e) {
         e.preventDefault();
         // console.log("INVIO if-case - " + tastoPremuto)
         // console.log(divs[currentFocus].children[2].value);
-        inputNomeBlocco.value = divs[currentFocus].children[2].getAttribute('value');
+        inputNomeMod.value = divs[currentFocus].children[2].getAttribute('value');
         currentFocus = -1;
         closeAllLists();
     } else {
@@ -162,7 +174,7 @@ inputNomeBlocco.addEventListener("keyup", function (e) {
     }
 })
 
-document.getElementById("nomeBlocco").addEventListener("focusout", function (e) {
+document.getElementById("nomeMod").addEventListener("focusout", function (e) {
     setTimeout(closeAllLists, 500);
 });
 
@@ -172,29 +184,3 @@ document.addEventListener("keypress", function (e) {
         // console.log("INVIO documento - " + e.code)
     }
 })
-
-//Aggiunta descrizione e immagine oggetto nella pagina
-const nomeOggetto = document.getElementById('nomeOggetto');
-const descrizioneOggetto = document.getElementById('descrizioneOggetto');
-const immagine = document.getElementById('immagineOggetto');
-let oggettoJSON;
-function mostraInfoBlocco() {
-    console.log(this.getAttribute('value'));
-    let nomeOggetto = this.getAttribute('value').replaceAll(" ", '_').toLowerCase();
-
-    // console.log(risultati);
-    risultati.forEach(element => {
-        if (element['name'] == this.getAttribute('value')) {
-            oggettoJSON = element;
-            return;
-        }
-    });
-
-
-    // console.log(oggettoJSON);
-    // immagine.src = linkApiImmagini.replace("nomeOggetto", nomeOggetto)
-    nomeOggetto.textContent = oggettoJSON['name'];
-    descrizioneOggetto.textContent = oggettoJSON['description'];
-    immagine.src = linkApiImmagini.replace("nomeOggetto", nomeOggetto);
-    // console.log("hey, funziona, finalmente")
-}

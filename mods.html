@@ -5,22 +5,20 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>API di Minecraft</title>
-
+    <title>Cerca MOD</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
     <link rel="stylesheet" href="css/main.css">
 </head>
 
 <body>
-    <h2>Minecraft API per cercare un blocco e visualizzarne le relative informazioni</h2>
-
     <form action="" id="wrapper">
         <div class="wrapper-input">
             <div class="inputGioco">
                 <p class="vuoto"></p>
-                <p for="nomeBlocco" class="primaColonna">Oggetto: </p>
-                <label for="nomeBlocco" title="Nome blocco"></label>
-                <input type="text" id="nomeBlocco" name="nomeBlocco" title="Nome blocco" placeholder="Selezionare l'opzione desiderata" autocomplete="off">
+                <p for="nomeMod" class="primaColonna">Oggetto: </p>
+                <label for="nomeMod" title="Nome blocco"></label>
+                <input type="text" id="nomeMod" name="nomeMod" title="Nome blocco"
+                    placeholder="Selezionare l'opzione desiderata" autocomplete="off">
                 <p class="vuoto"></p>
             </div>
         </div>
@@ -28,22 +26,22 @@
 
         </div>
     </form>
-    
+
 
 
     <!-- <iframe src="https://minecraft.fandom.com/wiki/Iron_Ingot?so=search" frameborder="0" style="width: 100%; height: 10rem"></iframe> Risultato finale, solo informazioni -->
 
     <div class="wrapper-risultato">
         <div class="sinistra">
-            <h3 id="nomeOggetto"></h3>
-            <p id="descrizioneOggetto"></p>
+            <h3 id="nomeMod"></h3>
+            <p id="descrizioneMod"></p>
         </div>
-        <div class="destra">
+        <!-- <div class="destra">
             <img id="immagineOggetto" title="immagine oggetto scelto" src="">
-        </div>
+        </div> -->
     </div>
 
-    <script src="js/index.js"></script>
+    <script src="js/cercaMod.js"></script>
 </body>
 
 </html>
