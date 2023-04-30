@@ -119,13 +119,17 @@ function aggiungiEventListener() {
     let div = document.getElementById("autocomplete-list");
     let children = div.childNodes, n = children.length;
     for (let i = 0; i < n; i++) {
-        children[i].children[2].addEventListener("click", mostraInfoBlocco);
+        children[i].children[2].addEventListener("click", mostraInfo);
         children[i].children[2].addEventListener("click", clickItem);
         children[i].children[2].addEventListener("click", closeAllLists);
         children[i].children[2].addEventListener("focusout", function (e) {
             closeAllLists();
         });
     }
+}
+
+function mostraInfo() {
+    console.log(this['id']);
 }
 
 function clickItem() {

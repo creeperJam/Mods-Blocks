@@ -51,21 +51,21 @@ label {
 }
 
 #nomeBlocco,
+#nomeGioco,
 #nomeMod {
   border-radius: var(--border-radius) var(--border-radius) 0 0;
 }
 
 input:hover,
-span:hover {
-  border-color: var(--primary);
-  background-color: var(--primary);
-  color: white;
+span:hover,
+.spanFocus {
+  border-color: var(--primary) !important;
+  background-color: var(--primary) !important;
+  color: white !important;
 }
 
-.spanFocus {
-  border-color: var(--primary);
-  background-color: var(--primary);
-  color: white;
+span:hover {
+  transition: 200ms;
 }
 
 span {
@@ -82,8 +82,13 @@ span {
 
 ::placeholder {
   /* Chrome, Firefox, Opera, Safari 10.1+ */
-  color: white !important;
+  color: lightsteelblue !important;
   opacity: 0.8 !important;
+}
+
+::selection {
+  color: black;
+  background-color: yellow;
 }
 
 
@@ -130,4 +135,6 @@ span {
   z-index: inherit;
   width: 128px;
   height: 128px;
+  border: none !important;
+  outline: none !important;
 }

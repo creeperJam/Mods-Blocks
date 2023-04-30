@@ -1,12 +1,12 @@
 let inputNomeBlocco = document.getElementById("nomeBlocco");
 let span = document.getElementById("grassetto");
-let descrizione =
+// let descrizione =
 
-    inputNomeBlocco.addEventListener("keyup", cercaBlocco, false);
+inputNomeBlocco.addEventListener("keyup", cercaBlocco, false);
 // inputNomeBlocco.addEventListener("submit", mostraInfoBlocco ,false);
 const linkApiListBlocchi = "https://minecraft-api.vercel.app/api";
 const linkWiki = "https://minecraft.fandom.com/wiki/nomeOggetto?so=search"; // "https://minecraft.fandom.com/wiki/NomeBlocco?so=search" - inutilizzabile
-const linkApiImmagini = "http://209.38.242.254:6969/x800/nomeOggetto.png"; 
+const linkApiImmagini = "http://209.38.242.254:6969/x800/nomeOggetto.png";
 
 // Spiegazione link: https://minecraft.fandom.com/wiki/Iron_Ingot?so=search - inutilizzabile
 // Iron_Ingot --> nome del blocco (replace("nomeOggetto", nomeBlocco)) con "_" al posto degli spazi
@@ -107,13 +107,47 @@ function aggiungiEventListener() {
     let div = document.getElementById("autocomplete-list");
     let children = div.childNodes, n = children.length;
     for (let i = 0; i < n; i++) {
-        children[i].children[2].addEventListener("click", mostraInfoBlocco);
+        children[i].children[2].addEventListener("keydown", mostraInfo);
+        children[i].children[2].addEventListener("click", mostraInfo);
         children[i].children[2].addEventListener("click", clickItem);
         children[i].children[2].addEventListener("click", closeAllLists);
         children[i].children[2].addEventListener("focusout", function (e) {
             closeAllLists();
         });
     }
+}
+
+
+//Aggiunta descrizione e immagine oggetto nella pagina
+const nomeOggetto = document.getElementById('nomeOggetto');
+const descrizioneOggetto = document.getElementById('descrizioneOggetto');
+const immagine = document.createElement('img');
+let oggettoJSON;
+
+document.getElementsByClassName("destra")[0].appendChild(immagine);
+immagine.setAttribute("id", "immagineOggetto");
+immagine.setAttribute("src", "../immagini/trasparente.png");
+function mostraInfo(e) {
+    // console.log(e.code);
+    if (e.code == "Enter" || e.code == "undefined") {}
+    console.log(this.getAttribute('value'));
+    let nomeOggetto = this.getAttribute('value').replaceAll(" ", '_').toLowerCase();
+
+    // console.log(risultati);
+    risultati.forEach(element => {
+        if (element['name'] == this.getAttribute('value')) {
+            oggettoJSON = element;
+            return;
+        }
+    });
+
+
+    // console.log(oggettoJSON);
+    // immagine.src = linkApiImmagini.replace("nomeOggetto", nomeOggetto)
+    nomeOggetto.textContent = oggettoJSON['name'];
+    descrizioneOggetto.textContent = oggettoJSON['description'];
+    immagine.src = linkApiImmagini.replace("nomeOggetto", nomeOggetto);
+    // console.log("hey, funziona, finalmente")
 }
 
 function clickItem() {
@@ -136,8 +170,9 @@ function focus(element) {
     element.setAttribute("class", "spanFocus");
 }
 
-inputNomeBlocco.addEventListener("keyup", function (e) {
+inputNomeBlocco.addEventListener("keyup", async function (e) {
     let divs = document.getElementById('autocomplete-list').children;
+    // console.log(divs[0].children)
     let tastoPremuto = e.code;
 
     // console.log(tastoPremuto);
@@ -172,29 +207,3 @@ document.addEventListener("keypress", function (e) {
         // console.log("INVIO documento - " + e.code)
     }
 })
-
-//Aggiunta descrizione e immagine oggetto nella pagina
-const nomeOggetto = document.getElementById('nomeOggetto');
-const descrizioneOggetto = document.getElementById('descrizioneOggetto');
-const immagine = document.getElementById('immagineOggetto');
-let oggettoJSON;
-function mostraInfoBlocco() {
-    console.log(this.getAttribute('value'));
-    let nomeOggetto = this.getAttribute('value').replaceAll(" ", '_').toLowerCase();
-
-    // console.log(risultati);
-    risultati.forEach(element => {
-        if (element['name'] == this.getAttribute('value')) {
-            oggettoJSON = element;
-            return;
-        }
-    });
-
-
-    // console.log(oggettoJSON);
-    // immagine.src = linkApiImmagini.replace("nomeOggetto", nomeOggetto)
-    nomeOggetto.textContent = oggettoJSON['name'];
-    descrizioneOggetto.textContent = oggettoJSON['description'];
-    immagine.src = linkApiImmagini.replace("nomeOggetto", nomeOggetto);
-    // console.log("hey, funziona, finalmente")
-}

@@ -15,9 +15,17 @@
         <div class="wrapper-input">
             <div class="inputGioco">
                 <p class="vuoto"></p>
-                <p for="nomeMod" class="primaColonna">Oggetto: </p>
-                <label for="nomeMod" title="Nome blocco"></label>
-                <input type="text" id="nomeMod" name="nomeMod" title="Nome blocco"
+                <p for="nomeGioco" class="primaColonna">Gioco: </p>
+                <label for="nomeGioco" title="Nome gioco"></label>
+                <input type="text" id="nomeGioco" name="nomeGioco" title="Nome gioco"
+                    placeholder="Selezionare l'opzione desiderata" autocomplete="off">
+                <p class="vuoto"></p>
+            </div>
+            <div class="inputMod">
+                <p class="vuoto"></p>
+                <p for="nomeMod" class="primaColonna">Mod: </p>
+                <label for="nomeMod" title="Nome mod"></label>
+                <input type="text" id="nomeMod" name="nomeMod" title="Nome mod"
                     placeholder="Selezionare l'opzione desiderata" autocomplete="off">
                 <p class="vuoto"></p>
             </div>
@@ -25,6 +33,10 @@
         <div id="autocomplete-list" class="autocomplete-items">
 
         </div>
+
+
+        <!-- <button type="button"><a href="https://edge.forgecdn.net/files/2925/344/A  B-1.0.0.zip" download="Mod">Premimi</a></button> -->
+        <!-- Pulsante da aggiungere poi al risultato per far scaricare la mod cercata (se cercata) -->
     </form>
 
 
@@ -33,8 +45,8 @@
 
     <div class="wrapper-risultato">
         <div class="sinistra">
-            <h3 id="nomeMod"></h3>
-            <p id="descrizioneMod"></p>
+            <h3 id="nomeModRisultato"></h3>
+            <p id="descrizioneModRisultato"></p>
         </div>
         <!-- <div class="destra">
             <img id="immagineOggetto" title="immagine oggetto scelto" src="">
