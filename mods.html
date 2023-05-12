@@ -7,53 +7,65 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cerca MOD</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
-    <link rel="stylesheet" href="css/main.css">
+
+    <link rel="stylesheet" href="./css/main.css">
+
+    <link rel="stylesheet" href="./css/mods.css">
 </head>
 
 <body>
-    <form action="" id="wrapper">
-        <div class="wrapper-input">
-            <div class="inputGioco">
-                <p class="vuoto"></p>
-                <p for="nomeGioco" class="primaColonna">Gioco: </p>
-                <label for="nomeGioco" title="Nome gioco"></label>
-                <input type="text" id="nomeGioco" name="nomeGioco" title="Nome gioco"
-                    placeholder="Selezionare l'opzione desiderata" autocomplete="off">
-                <p class="vuoto"></p>
+    <!-- <form action="" id="wrapper"> -->
+    <div class="wrapper-input">
+        <div id="sinistra">
+            <div class="wrapper-inputNomeGioco">
+                <p title="Nome gioco">Gioco: </p>
+                <!-- <label for="nomeGioco" title="Nome gioco">Gioco: </label> -->
+                <select type="text" id="selectNomeGioco" name="nomeGioco" title="Nome gioco">
+                    <option value="-1" selected="selected">Selezionare un'opzione tra le disponibili</option>
+                </select>
             </div>
-            <div class="inputMod">
-                <p class="vuoto"></p>
-                <p for="nomeMod" class="primaColonna">Mod: </p>
-                <label for="nomeMod" title="Nome mod"></label>
-                <input type="text" id="nomeMod" name="nomeMod" title="Nome mod"
-                    placeholder="Selezionare l'opzione desiderata" autocomplete="off">
-                <p class="vuoto"></p>
+
+            <div class="wrapper-inputNomeMod">
+                <!-- <label for="nomeMod" title="Nome mod">Mod: </label> -->
+                <!-- <input type="text" id="listaNomeMod" name="nomeMod" title="Nome mod" list="nomeModList"/> -->
+                <p title="Nome mod">Mod: </p>
+                <label for="inputNomeMod" title="Nome mod"></label> <!-- Solo per togliere l'errore -->
+                <input type="text" id="inputNomeMod" placeholder="Selezionare un'opzione" list="datalistNomeMod"
+                    disabled />
+                <datalist id="datalistNomeMod">
+                    <!-- <option selected="selected">Selezionare un'opzione</option> -->
+                </datalist>
+            </div>
+
+            <div id="autocomplete-list" class="autocomplete-items">
+                <!-- Esempio di come sarà elemento della lista -->
+                <div class="autocomplete-item">
+                    <p>Mod: </p>
+                    <span>Created Applied energistics (nome Mod) - 842197 (id mod)</span>
+
+                </div>
             </div>
         </div>
-        <div id="autocomplete-list" class="autocomplete-items">
 
+        <div id="destra">
+            <button id="search" type="button" disabled>Cerca</button>
         </div>
-
-
-        <!-- <button type="button"><a href="https://edge.forgecdn.net/files/2925/344/A  B-1.0.0.zip" download="Mod">Premimi</a></button> -->
-        <!-- Pulsante da aggiungere poi al risultato per far scaricare la mod cercata (se cercata) -->
-    </form>
-
-
-
-    <!-- <iframe src="https://minecraft.fandom.com/wiki/Iron_Ingot?so=search" frameborder="0" style="width: 100%; height: 10rem"></iframe> Risultato finale, solo informazioni -->
-
-    <div class="wrapper-risultato">
-        <div class="sinistra">
-            <h3 id="nomeModRisultato"></h3>
-            <p id="descrizioneModRisultato"></p>
-        </div>
-        <!-- <div class="destra">
-            <img id="immagineOggetto" title="immagine oggetto scelto" src="">
-        </div> -->
     </div>
 
-    <script src="js/cercaMod.js"></script>
+
+
+
+    <!-- <a id="downloadMod" href="https://edge.forgecdn.net/files/2925/344/A  B-1.0.0.zip" download="Mod">Download</a> -->
+    <!-- Pulsante da aggiungere poi al risultato per far scaricare la mod cercata (se cercata) -->
+    <!-- </form> -->
+
+
+
+    </div>
+    </div>
+
+
+    <script src="js/mods.js"></script>
 </body>
 
 </html>

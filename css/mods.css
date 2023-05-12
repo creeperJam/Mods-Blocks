@@ -1,0 +1,118 @@
+#downloadMod {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+
+    display: inline-block;
+    border: 1px solid var(--primary);
+    background-color: var(--primary);
+    border-radius: var(--border-radius);
+    width: -moz-fit-content;
+    width: fit-content;
+
+    margin: 5px;
+    padding: 5px;
+    color: white;
+}
+
+a:link {
+    text-decoration: none;
+}
+
+a:visited {
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+a:active {
+    text-decoration: none;
+}
+
+.wrapper-input {
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+
+    display: flex;
+    flex-direction: row;
+
+    width: 80%;
+    border: 1px solid greenyellow;
+}
+
+#sinistra {
+    display: flex;
+    flex-direction: column;
+
+    width: 80%;
+    margin: 5px 0;
+}
+
+#sinistra>* {
+    display: flex;
+}
+
+#destra {
+    margin: 0 5%;
+    display: flex;
+    width: 10%;
+    align-items: center;
+}
+
+.wrapper-inputNomeGioco,
+.wrapper-inputNomeMod {
+    margin: 5px 0;
+}
+
+.wrapper-inputNomeMod {
+    margin-bottom: 0;
+}
+
+.wrapper-inputNomeGioco>p,
+.wrapper-inputNomeMod>p,
+.autocomplete-item>p {
+    display: flex;
+    width: 10%;
+    margin: 0;
+    margin-right: 1%;
+    margin-left: 1%;
+    text-align: center;
+    align-items: center;
+}
+
+#selectNomeGioco,
+#inputNomeMod {
+    width: 100%;
+    margin-bottom: 0;
+}
+
+#search {
+    margin: 0;
+}
+
+#autocomplete-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.autocomplete-item {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin: 0
+}
+
+.autocomplete-item>p {
+    opacity: 0%;
+    width: 10%;
+    margin-right: 1%;
+    margin-left: 1%;
+}
+
+span {
+    width: 100%;
+}

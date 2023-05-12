@@ -126,7 +126,7 @@ let oggettoJSON;
 
 document.getElementsByClassName("destra")[0].appendChild(immagine);
 immagine.setAttribute("id", "immagineOggetto");
-immagine.setAttribute("src", "../immagini/trasparente.png");
+immagine.setAttribute("src", "./immagini/trasparente.png");
 function mostraInfo(e) {
     // console.log(e.code);
     if (e.code == "Enter" || e.code == "undefined") {}
