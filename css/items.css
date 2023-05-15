@@ -15,10 +15,6 @@
   display: table-cell;
 }
 
-.autocomplete-item>span {
-  background-color: var(--background-color);
-}
-
 /* .wrapper-input {
   vertical-align: middle !important;
 } */
@@ -47,9 +43,8 @@
     z-index: 5 !important;
     left: 50%;
     transform: translateX(-50%);
-
     top: 250px;
-    width: 90%;
+    width: 100%;
 }
 
 .sinistra {
@@ -57,27 +52,26 @@
     position: inherit;
     justify-content: flex-start;
     flex-direction: column;
-
-    left: 12%;
-    width: 38%;
+    left: 15%;
+    width: 35%;
 }
 
 .destra {
     display: flex;
     position: inherit;
-    justify-content: flex-end;
+    justify-content: center;
     align-items: flex-start;
-
-    right: 15%;
-    width: 38%;
-    height: 225px;
+    right: 5%;
+    width: 45%;
+    height: 128px;
+    align-content: center;
 }
 
 #immagineOggetto {
     position: absolute;
     z-index: inherit;
-    width: 128px;
-    height: 128px;
+    /* height: 128px; */
+    /* width: 128px; */
     border: none !important;
     outline: none !important;
 }

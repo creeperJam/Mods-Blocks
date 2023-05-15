@@ -60,6 +60,7 @@ a:active {
     display: flex;
     width: 10%;
     align-items: center;
+    height:  151px;
 }
 
 .wrapper-inputNomeGioco,

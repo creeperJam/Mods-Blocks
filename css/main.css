@@ -6,10 +6,18 @@ form {
 #nomeBlocco,
 #inputNomeMod {
   border-radius: var(--border-radius) var(--border-radius) 0 0;
+  margin-bottom: 0;
+}
+
+.autocomplete-item > span {
+  --border-color: var(--form-element-border-color);
+  border: var(--border-width) solid var(--border-color);
+  background-color: var(--background-color);
 }
 
 span {
   margin: 0 !important;
+  padding: var(--form-element-spacing-vertical) var(--form-element-spacing-horizontal);
 }
 
 input:hover::placeholder {

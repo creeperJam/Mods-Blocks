@@ -20,7 +20,7 @@ selectNomeGioco.addEventListener("change", function () {
         gameId = selectNomeGioco.value;
     }
 });
-inputNomeMod.addEventListener("keyup", suggerimenti);
+inputNomeMod.addEventListener("keyup", suggerimenti, false);
 
 
 // Spiegazione api usate:
@@ -60,43 +60,9 @@ function gameOptionsAdd() {
 
 
 // aggiunta dei tag option per i nomi delle mod dopo aver selezionato un gioco dal select
-const getMods = "/v1/mods/search"; // + gameId + "&searchFilter=" + inputNomeMod.value + "&pageSize=50
+const getMods = "/v1/mods/search"; // + gameId + "&searchFilter=" + inputNomeMod.value + "&pageSize=15
 let risultati = new Array();
-let filtroRicerca = ""
-gameModsOptionsAdd(); // Test funzione
-function gameModsOptionsAdd() {
-    risultati = new Array();
-    gameId = selectNomeGioco.value;
-    if (gameId == -1) {
-        searchButton.disabled = true;
-        inputNomeMod.disabled = true;
-        inputNomeMod.value = "";
-        return;
-    }
-
-    risultati = new Array();
-    inputNomeMod.disabled = false;
-    searchButton.disabled = false;
-    // datalistNomeMod.innerHTML = `<option selected="selected">Selezionare un'opzione tra le disponibili</option>`;
-    fetch(linkApiCurseForge + getMods + "?gameId=" + gameId + "&searchFilter=" + filtroRicerca, {
-        method: 'GET',
-        headers: headers
-    })
-        .then((response) => response.json())
-        .then((responseJson) => responseJson.data)
-        .then((data) => {
-            data.forEach(element => {
-                let option = document.createElement("option");
-                option.setAttribute("value", element['id']);
-                option.innerHTML = element['name'];
-                datalistNomeMod.appendChild(option);
-
-                risultati.push(element);
-            });
-        });
-}
-
-
+let pageSize = 15;
 let debounceTimeout = 0;
 let vecchioInput = "";
 function suggerimenti() {
@@ -108,7 +74,7 @@ function suggerimenti() {
     if (input.length > 0) {
         clearTimeout(debounceTimeout);
         debounceTimeout = setTimeout(async () => {
-            await fetch(linkApiCurseForge + getMods + "?gameId=" + gameId + "&searchFilter=" + input, {
+            await fetch(linkApiCurseForge + getMods + "?gameId=" + gameId + "&searchFilter=" + input + "&sortOrder=desc" + "&sortType=1" + "&pagesize=" + pageSize, {
                 method: 'GET',
                 headers: headers
             })
@@ -118,25 +84,63 @@ function suggerimenti() {
                         risultati.push(element);
                     });
                 });
+
+            // console.log(risultati);
+            autocompleteList.innerHTML = "";
+            let n = risultati.length;
+            risultati.forEach((element, index) => {
+                // console.log("ci sei?")
+                let inizioStringa = element['name'].toLowerCase().indexOf(inputNomeMod.value.toLowerCase()); // Indice in cui inizia la stringa cercata
+
+                let div = document.createElement("div");
+                let span = document.createElement("span");
+
+                div.setAttribute("class", "autocomplete-item")
+                span.setAttribute("value", element['id']);
+
+                if (index == n - 1) span.setAttribute("style", "border-radius: 0 0 var(--border-radius) var(--border-radius)");
+                else span.setAttribute("style", "border-radius: 0");
+
+                // span.innerHTML = element['name'].substring(0, inizioStringa);
+                span.innerHTML = element['name'];
+                div.appendChild(document.createElement('p'));
+                div.appendChild(span);
+
+                addEventListeners(span);
+
+                autocompleteList.appendChild(div);
+            });
         }, 350);
-
-        autocompleteList.innerHTML = "";
-        risultati.forEach((element, index) => {
-            let inizioStringa = element['name'].toLowerCase().indexOf(inputNomeMod.value.toLowerCase()); // Indice in cui inizia la stringa cercata
-
-            let div = document.createElement("div");
-            let span = document.createElement("span");
-
-            div.setAttribute("class", "autocomplete-item")
-            span.setAttribute("value", element['id']);
-
-            if (index == n - 1) testoSuggerimento.setAttribute("style", "border-radius: 0 0 var(--border-radius) var(--border-radius)");
-            else testoSuggerimento.setAttribute("style", "border-radius: 0");
-
-            span.innerHTML = element['name'].substring(0, inizioStringa);
-            div.appendChild(span);
-
-            autocompleteList.appendChild(div);
-        });
     }
 }
+
+function addEventListeners(element) {
+    element.addEventListener("click", function () {
+        inputNomeMod.value = element.innerHTML;
+        autocompleteList.innerHTML = "";
+        showModInfo(element);
+    });
+}
+
+function showModInfo(element) {
+    console.log(element);
+}
+
+let focus = -1;
+inputNomeMod.addEventListener("keydown", function (e) {
+    let elements = document.querySelectorAll(".autocomplete-item > span");
+    
+    if (e.key == "Enter") {
+        e.preventDefault();
+        inputNomeMod.value = element.innerHTML;
+        autocompleteList.innerHTML = "";
+    }
+    else if (e.key == "ArrowDown") {
+        e.preventDefault();
+        if (element.parentElement.nextSibling != null) element.parentElement.nextSibling.firstChild.nextSibling.focus();
+    }
+    else if (e.key == "ArrowUp") {
+        e.preventDefault();
+        if (element.parentElement.previousSibling != null) element.parentElement.previousSibling.firstChild.nextSibling.focus();
+    }
+});
