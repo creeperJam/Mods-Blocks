@@ -31,7 +31,7 @@ a:active {
     text-decoration: none;
 }
 
-.wrapper-input {
+.wrapper {
     position: relative;
     left: 50%;
     transform: translateX(-50%);
@@ -43,7 +43,7 @@ a:active {
     border: 1px solid greenyellow;
 }
 
-#sinistra {
+.left {
     display: flex;
     flex-direction: column;
 
@@ -51,29 +51,32 @@ a:active {
     margin: 5px 0;
 }
 
-#sinistra>* {
+.left>* {
     display: flex;
 }
 
-#destra {
-    margin: 0 5%;
+.right {
     display: flex;
-    width: 10%;
+    flex-direction: column;
+    justify-content: center;
     align-items: center;
-    height:  151px;
+
+    width: 10%;
+    height: 151px;
+    margin: 0 5%;
 }
 
-.wrapper-inputNomeGioco,
-.wrapper-inputNomeMod {
+.wrapper-gameSelect,
+.wrapper-modNameInput {
     margin: 5px 0;
 }
 
-.wrapper-inputNomeMod {
+.wrapper-modNameInput {
     margin-bottom: 0;
 }
 
-.wrapper-inputNomeGioco>p,
-.wrapper-inputNomeMod>p,
+.wrapper-gameSelect>p,
+.wrapper-modNameInput>p,
 .autocomplete-item>p {
     display: flex;
     width: 10%;
@@ -82,10 +85,11 @@ a:active {
     margin-left: 1%;
     text-align: center;
     align-items: center;
+    justify-content: center;
 }
 
-#selectNomeGioco,
-#inputNomeMod {
+#gameSelect,
+#modNameInput {
     width: 100%;
     margin-bottom: 0;
 }
@@ -104,7 +108,7 @@ a:active {
     display: flex;
     flex-direction: row;
     align-items: center;
-    margin: 0
+    margin: 0;
 }
 
 .autocomplete-item>p {
@@ -116,4 +120,13 @@ a:active {
 
 span {
     width: 100%;
+}
+
+/* Risultato */
+#left-result,
+#right-result {
+    width: 50%;
+    height: 100%;
+    margin: .5% 1%;
+    align-items: center;
 }

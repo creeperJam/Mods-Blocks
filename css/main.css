@@ -4,7 +4,7 @@ form {
 }
 
 #nomeBlocco,
-#inputNomeMod {
+#modNameInput {
   border-radius: var(--border-radius) var(--border-radius) 0 0;
   margin-bottom: 0;
 }
@@ -20,6 +20,10 @@ span {
   padding: var(--form-element-spacing-vertical) var(--form-element-spacing-horizontal);
 }
 
+input:hover {
+  background-color: var(--primary) !important;
+}
+
 input:hover::placeholder {
   /* Chrome, Firefox, Opera, Safari 10.1+ */
   color: white !important;
@@ -29,4 +33,9 @@ input:hover::placeholder {
 ::selection {
   color: black;
   background-color: yellow;
+}
+
+.focus {
+  background-color: var(--primary) !important;
+  color: white !important;
 }

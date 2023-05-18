@@ -15,55 +15,60 @@
 
 <body>
     <!-- <form action="" id="wrapper"> -->
-    <div class="wrapper-input">
-        <div id="sinistra">
-            <div class="wrapper-inputNomeGioco">
-                <p title="Nome gioco">Gioco: </p>
-                <!-- <label for="nomeGioco" title="Nome gioco">Gioco: </label> -->
-                <select type="text" id="selectNomeGioco" name="nomeGioco" title="Nome gioco">
-                    <option value="-1" selected="selected">Selezionare un'opzione tra le disponibili</option>
+    <div class="wrapper">
+        <div class="left">
+            <div class="wrapper-gameSelect">
+                <p title="Game name">Game: </p>
+                <!-- <label for="nomeGioco" title="Game name">Gioco: </label> -->
+                <select type="text" id="gameSelect" name="gameSelect" title="Game name">
+                    <option value="-1" selected="selected">Select one of the available options</option>
                 </select>
             </div>
 
-            <div class="wrapper-inputNomeMod">
-                <!-- <label for="nomeMod" title="Nome mod">Mod: </label> -->
-                <!-- <input type="text" id="listaNomeMod" name="nomeMod" title="Nome mod" list="nomeModList"/> -->
-                <p title="Nome mod">Mod: </p>
-                <label for="inputNomeMod" title="Nome mod"></label> <!-- Solo per togliere l'errore -->
-                <input type="text" id="inputNomeMod" placeholder="Selezionare un'opzione" list="datalistNomeMod"
-                    disabled />
-                <datalist id="datalistNomeMod">
-                    <!-- <option selected="selected">Selezionare un'opzione</option> -->
-                </datalist>
+            <div class="wrapper-modNameInput">
+                <!-- <label for="nomeMod" title="Mod name">Mod: </label> -->
+                <!-- <input type="text" id="listaNomeMod" name="nomeMod" title="Mod name" list="nomeModList"/> -->
+                <p title="Mod name">Mod: </p>
+                <label for="modNameInput" title="Mod name"></label> <!-- Solo per togliere l'errore -->
+                <input type="text" id="modNameInput" placeholder="Write something for autocomplete" disabled />
+                <!-- <datalist id="datalistNomeMod">
+                    <option selected="selected">Selezionare un'opzione</option>
+                </datalist> -->
             </div>
 
             <div id="autocomplete-list" class="autocomplete-items">
                 <!-- Esempio di come sarà elemento della lista -->
                 <!-- <div class="autocomplete-item">
                     <p>Mod: </p>
-                    <span>Created Applied energistics (nome Mod) - 842197 (id mod)</span>
+                    <span>Created Applied energistics (nome mod) - 842197 (id mod)</span>
 
                 </div> -->
             </div>
         </div>
 
-        <div id="destra">
+        <div class="right">
             <button id="search" type="button" disabled>Cerca</button>
         </div>
     </div>
 
-
-
-
     <!-- <a id="downloadMod" href="https://edge.forgecdn.net/files/2925/344/A  B-1.0.0.zip" download="Mod">Download</a> -->
     <!-- Pulsante da aggiungere poi al risultato per far scaricare la mod cercata (se cercata) -->
     <!-- </form> -->
-
-
-
     </div>
     </div>
 
+    <div class="wrapper">
+        <div class="left" id="left-result">
+            <h4 id="modName">Applied Energistics</h4>
+            <p id="modAuthor">Created by: AlgorithmX2</p>
+            <p id="modDescription">Description: Applied Energistics is a Minecraft Mod which contains an advanced storage system called ME that lets you store items compactly and in the way you want, as well as do intricate automation.</p>
+            <p id="modVersion">Version: 1.0.0</p>
+            <p id="modReleaseDate">Release date: 2021-04-01</p>
+        </div>
+        <div class="right" id="right-result">
+            <p>Test destra</p>
+        </div>
+    </div>
 
     <script src="js/mods.js"></script>
 </body>
