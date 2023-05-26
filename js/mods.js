@@ -1,11 +1,10 @@
-// General Variabiles/Costants
-let focus = -1;
-// let modNameInput = document.getElementById("nomeMod");
-let searchButton = document.getElementById("search");
-let gameSelect = document.getElementById("gameSelect");
-let modNameInput = document.getElementById("modNameInput");
-// let datalistNomeMod = document.getElementById("datalistNomeMod");
-let autocompleteList = document.getElementById("autocomplete-list");
+// Global Variabiles/Costants
+// var modNameInput = document.getElementById("nomeMod");
+const searchButton = document.getElementById("search");
+const gameSelect = document.getElementById("gameSelect");
+const modNameInput = document.getElementById("modNameInput");
+// const datalistNomeMod = document.getElementById("datalistNomeMod");
+const autocompleteList = document.getElementById("autocomplete-list");
 
 const linkApiCurseForge = "https://api.curseforge.com";
 const apiKey = "$2a$10$bfD0D0C.HJ.DPma2VLUitO7luPMA0EmnJH8f8I7mocgmlbLKOI4r.";
@@ -17,10 +16,14 @@ const modLoaders = [
     "Fabric",
     "Quilt"
 ];
+const headers = {
+    'Accept': 'application/json',
+    'x-api-key': apiKey
+};
 
-let modFilePage = 0;
-let selectedTab = -1;
-
+var modFilePage = 0;
+var selectedTab = -1;
+var focus = -1;
 // Event listeners
 gameSelect.addEventListener("change", function () {
     modNameInput.value = "";
@@ -43,12 +46,6 @@ modNameInput.addEventListener("keyup", autocomplete, false);
 // Servizi offerti usati:
 //   GET /v1/games/ 
 //   GET /v1/mods/search/
-
-
-const headers = {
-    'Accept': 'application/json',
-    'x-api-key': apiKey
-};
 
 // Functions
 
@@ -75,10 +72,10 @@ function gameOptionsAdd() {
 
 // aggiunta dei tag option per i nomi delle mod dopo aver selezionato un gioco dal select
 const getMods = "/v1/mods/search"; // + gameId + "&searchFilter=" + modNameInput.value + "&pageSize=15
-let risultati = new Array();
-let pageSizeAutocomplete = 15;
-let debounceTimeout = 0;
-let vecchioInput = "";
+var risultati = new Array();
+const pageSizeAutocomplete = 15;
+var debounceTimeout = 0;
+var vecchioInput = "";
 
 async function fetchRequest(input) {
     risultati = new Array();
@@ -100,7 +97,11 @@ function autocomplete(e) {
     let input = modNameInput.value;
     input.replaceAll(" ", "%20");
 
-    if (modNameInput.value.trim() == "") autocompleteList.innerHTML = "";
+    if (modNameInput.value.trim() == "") {
+        autocompleteList.innerHTML = "";
+        document.getElementsByClassName('result')[0].style.visibility = 'visible';
+        return;
+    }
 
     // console.log(input);
     if (input.length > 0 && input != vecchioInput && e.code != "Enter") {
@@ -111,14 +112,17 @@ function autocomplete(e) {
             // console.log(risultati);
             autocompleteList.innerHTML = "";
             let n = risultati.length;
+            document.getElementsByClassName('result')[0].style.visibility = 'hidden';
             risultati.forEach((element, index) => {
                 // console.log("ci sei?")
                 let inizioStringa = element['name'].toLowerCase().indexOf(modNameInput.value.toLowerCase()); // Indice in cui inizia la stringa cercata
-
+                let spacing = document.createElement('p');
                 let div = document.createElement("div");
                 let span = document.createElement("span");
 
-                div.setAttribute("class", "autocomplete-item")
+                div.classList.add("autocomplete-item");
+                div.classList.add("modName");
+                spacing.classList.add('modName');
                 span.setAttribute("value", element['id']);
 
                 if (index == n - 1) span.setAttribute("style", "border-radius: 0 0 var(--border-radius) var(--border-radius)");
@@ -127,7 +131,9 @@ function autocomplete(e) {
                 span.innerHTML = `<strong>${element['name'].substring(inizioStringa, inizioStringa + modNameInput.value.length)}</strong>`;
                 span.innerHTML += `${element['name'].substring(inizioStringa + modNameInput.value.length)} - ${element['id']}`;
                 // span.innerHTML = element['name'];
-                div.appendChild(document.createElement('p'));
+                
+                
+                div.appendChild(spacing);
                 div.appendChild(span);
 
                 addEventListeners(span);
@@ -144,11 +150,12 @@ function clickAutocomplete(element) {
     modNameInput.value = element.textContent.substring(0, element.textContent.indexOf(" -"));
     selectedModId = element.getAttribute("value");
     autocompleteList.innerHTML = "";
+    document.getElementsByClassName('result')[0].style.visibility = 'visible';
 
     focus = -1;
 }
 
-let selectedModId = null;
+var selectedModId = null;
 function addEventListeners(element) {
     element.addEventListener("click", function () {
         clickAutocomplete(element);
@@ -158,7 +165,7 @@ function addEventListeners(element) {
 
 
 const getMod = "/v1/mods/";
-let mod;
+var mod;
 async function showModInfo() {
     mod = await fetch(linkApiCurseForge + getMod + selectedModId, {
         method: "GET",
@@ -282,20 +289,21 @@ document.addEventListener("keypress", function (e) {
 
 const getFile = "/v1/mods/{modId}/files/{fileId}";
 const getModDescription = "/v1/mods/{modId}/description";
-let arr;
+var arr;
+var tabContent = document.getElementsByClassName("tab-content")[0];
 function openTab(e) {
-    let tabContent = document.getElementsByClassName("tab-content")[0];
 
     switch (this.value) {
         case "description":
             if (selectedTab == 0) return;
-            insertDescriptionTab(tabContent);
+            document.getElementById("page-selector").innerHTML = "";
+            insertDescriptionTab();
             selectedTab = 0;
             break;
 
         case "files":
             if (selectedTab == 1) return;
-            insertFilesTab(tabContent);
+            insertFilesTab();
             selectedTab = 1;
 
             // Tentativo precedente alla versione funzionante sopra ^^^
@@ -329,8 +337,9 @@ function openTab(e) {
             break;
 
         case "screenshots":
+            document.getElementById("page-selector").innerHTML = "";
             if (selectedTab == 2) return;
-            insertScreenshotsTab(tabContent);
+            insertScreenshotsTab();
             selectedTab = 2;
             break;
 
@@ -339,7 +348,7 @@ function openTab(e) {
     }
 }
 
-async function insertDescriptionTab(tabContent) {
+async function insertDescriptionTab() {
     tabContent.style.flexDirection = "column";
 
     let description = await fetch(linkApiCurseForge + getModDescription.replace("{modId}", selectedModId), {
@@ -357,7 +366,7 @@ function gameVersions(gameVersionsArray) {
     let pattern = new RegExp("[0-9.]+");
 
     let gameVersionsString = new Array();
-    gameVersionsArray.forEach((element) => {1
+    gameVersionsArray.forEach((element) => {
         if (pattern.test(element)) gameVersionsString.push(element);
     });
     // console.log(gameVersionsString);
@@ -365,27 +374,45 @@ function gameVersions(gameVersionsArray) {
     return gameVersionsString.sort().toString();
 }
 
-async function insertFilesTab(tabContent) {
+async function insertFilesTab() {
+    let loading = document.createElement("img");
+    let modfilesNumRows = 20;
+    let numPages = Math.ceil(mod['latestFilesIndexes'].length / modfilesNumRows);
+    let pageSelector = document.getElementById("page-selector");
+
+    if (modFilePage != 0) pageSelector.innerHTML = `<button class="page-button" id="page-previous" alt="previous" onclick="changePage(${modFilePage - 1})"><img src="./immagini/freccia.png"/></button>`;
+    else pageSelector.innerHTML = `<button class="page-button" id="page-previous" alt="previous" onclick="changePage(${modFilePage - 1})" disabled><img src="./immagini/freccia.png"/></button>`;
+
+    for (let i = ((modFilePage - 2 < 0) ? 0 : (modFilePage - 2)); i <= ((modFilePage + 2 > numPages - 1) ? (numPages - 1) : (modFilePage + 2)); i++) {
+        // console.log("Current page: " + i)
+
+        if (i == modFilePage) pageSelector.innerHTML += `<button class="page-button" onclick="changePage(${i})" disabled number="true"><strong>${i + 1}</strong></button>`;
+        else pageSelector.innerHTML += `<button class="page-button" onclick="changePage(${i})">${i + 1}</button>`;
+        // page.innerHTML += `<button class="page-button" onclick="changePage(${i + 1})">${i + 1}</button>`;
+    }
+    if (modFilePage != numPages - 1) pageSelector.innerHTML += `<button class="page-button" id="page-next" alt="next" onclick="changePage(${modFilePage + 1})"><img src="./immagini/freccia.png"/></button>`;
+    else pageSelector.innerHTML += `<button class="page-button" id="page-next" alt="next" onclick="changePage(${modFilePage + 1})" disabled><img src="./immagini/freccia.png"/></button>`;
+
+
+
     tabContent.style.flexDirection = "row";
     tabContent.innerHTML = `<table id="files-table">
                 <thead id="files-header">
                     <tr>
-                        <th>Name</th>
-                        <th>Upload date</th>
-                        <th>Game version</th>
-                        <th>Mod loader</th>
-                        <th></th>
+                        <th scope="col">#</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Upload date</th>
+                        <th scope="col">Game version</th>
+                        <th scope="col">Mod loader</th>
+                        <th scope="col"></th>
                     </tr>
                 </thead>
                 <tbody id="files-body">`
 
-    let loading = document.createElement("img");
-    loading.src = "./immagini/loading.gif";
-    loading.setAttribute("id", "loading");
-    document.querySelector("#files-header > tr").appendChild(loading);
 
-    let modNumRows = 20;
-    arr = mod['latestFilesIndexes'].slice(modNumRows * modFilePage, modNumRows * (modFilePage + 1));
+    document.getElementById("files-table").setAttribute("aria-busy", "true");
+
+    arr = mod['latestFilesIndexes'].slice(modfilesNumRows * modFilePage, modfilesNumRows * (modFilePage + 1));
 
     for (let i = 0; i < arr.length; i++) {
         await fetch(linkApiCurseForge + getFile.replaceAll("{modId}", selectedModId).replaceAll("{fileId}", arr[i]['fileId']), {
@@ -395,31 +422,31 @@ async function insertFilesTab(tabContent) {
             .then(response => response.json())
             .then(responseJson => responseJson.data)
             .then(file => {
-                console.log(arr[i]);
+                // console.log(arr[i]);
                 // console.log(file)
                 let downloadUrl = file['downloadUrl'];
 
                 let tBodyContent = document.createElement("tr");
                 // console.log(tabContent);
 
-
+                tBodyContent.innerHTML += `<th scope="row">${i+1}</th>`;
                 if (file['fileName'].length > 28) {
                     tBodyContent.innerHTML += `
-                                <td title="${file['fileName']}">${file['fileName'].substring(0, 28)}...</td>
+                                <td class="gamefileName" title="${file['fileName']}">${file['fileName'].substring(0, 28)}...</td>
                             `;
                 } else {
                     tBodyContent.innerHTML += `
-                                <td title="${file['fileName']}">${file['fileName']}</td>
+                                <td class="gamefileName" title="${file['fileName']}">${file['fileName']}</td>
                             `;
                 }
                 // console.log(tBodyContent);
 
                 // TODO: per le versioni del gioco creare una funzione apposita che si occupa di riconoscere le versioni e di metterle in ordine, togliendo il modLoader dall'array
                 tBodyContent.innerHTML += `
-                            <td title="${file['fileDate']}">${file['fileDate'].slice(0, file['fileDate'].indexOf("T"))}</td>
-                            <td>${gameVersions(file['gameVersions'])}</td>
-                            <td>${modLoaders[arr[i]['modLoader']]}</td>
-                            <td><a class="downloadMod" href="${downloadUrl}" download="Mod">Download</a></td>
+                            <td class="gamefileDate" title="${file['fileDate']}">${file['fileDate'].slice(0, file['fileDate'].indexOf("T"))}</td>
+                            <td class="gamefileVersions">${gameVersions(file['gameVersions'])}</td>
+                            <td class="gamefileModLoader">${modLoaders[arr[i]['modLoader']]}</td>
+                            <td class="gamefileDownload"><a class="downloadMod" href="${downloadUrl}" download="Mod">Download</a></td>
                         `;
                 // console.log(tBodyContent);
 
@@ -427,10 +454,16 @@ async function insertFilesTab(tabContent) {
             });
     }
 
-    loading.parentNode.removeChild(loading);
+    document.getElementById("files-table").setAttribute("aria-busy", "false");
 }
 
-function insertScreenshotsTab(tabContent) {
+function changePage(i) {
+    // console.log("pagina precedente: " + modFilePage + " - pagina successiva: " + i);
+    modFilePage = i;
+    insertFilesTab(document.getElementById("files-tab-content"));
+}
+
+function insertScreenshotsTab() {
     let screenshots = mod['screenshots'];
     if (screenshots.length == 0) tabContent.innerHTML = `No images found for this mod.`;
     else {

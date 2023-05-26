@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 
 <head>
     <meta charset="UTF-8">
@@ -9,16 +9,15 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
 
     <link rel="stylesheet" href="./css/main.css">
-
     <link rel="stylesheet" href="./css/mods.css">
 </head>
 
 <body>
     <!-- <form action="" id="wrapper"> -->
-    <div class="wrapper">
+    <header class="wrapper">
         <div class="left">
             <div class="wrapper-gameSelect">
-                <p title="Game name">Game: </p>
+                <p title="Game name" class="gameName">Game: </p>
                 <!-- <label for="nomeGioco" title="Game name">Gioco: </label> -->
                 <select type="text" id="gameSelect" name="gameSelect" title="Game name">
                     <option value="-1" selected="selected">Select one of the available options</option>
@@ -28,7 +27,7 @@
             <div class="wrapper-modNameInput">
                 <!-- <label for="nomeMod" title="Mod name">Mod: </label> -->
                 <!-- <input type="text" id="listaNomeMod" name="nomeMod" title="Mod name" list="nomeModList"/> -->
-                <p title="Mod name">Mod: </p>
+                <p title="Mod name" class="modName">Mod: </p>
                 <label for="modNameInput" title="Mod name"></label> <!-- Solo per togliere l'errore -->
                 <input type="text" id="modNameInput" placeholder="Write something for autocomplete" disabled />
                 <!-- <datalist id="datalistNomeMod">
@@ -49,7 +48,7 @@
         <div class="right">
             <button id="search" type="button" disabled>Cerca</button>
         </div>
-    </div>
+    </header>
 
     <!-- <a id="downloadMod" href="https://edge.forgecdn.net/files/2925/344/A  B-1.0.0.zip" download="Mod">Download</a> -->
     <!-- Pulsante da aggiungere poi al risultato per far scaricare la mod cercata (se cercata) -->
@@ -57,10 +56,10 @@
     </div>
     </div>
 
-    <div class="wrapper">
+    <main class="result">
         <div class="left" id="left-result">
             <div class="header-result">
-                <img />
+                    
             </div>
             <h4 id="modName"></h4>
             <p id="modAuthor"></p>
@@ -78,15 +77,20 @@
             <div class="tabs-nav">
 
             </div>
+            <div id="page-selector">
 
+            </div>
             <div class="tab-content">
 
             </div>
         </div>
         <div class="right" id="right-result">
-            <p>Test destra</p>
+            <div id="container">
+                <h2>Test</h2>
+                <p>paragrafo</p>
+            </div>
         </div>
-    </div>
+    </main>
 
     <script src="js/mods.js"></script>
 </body>
