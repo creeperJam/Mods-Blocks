@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cerca MOD</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
 
     <link rel="stylesheet" href="./css/main.css">
     <link rel="stylesheet" href="./css/mods.css">
@@ -15,10 +16,9 @@
 <body>
     <!-- <form action="" id="wrapper"> -->
     <header class="wrapper">
-        <div class="left">
+        <div class="wrapper-left col-8">
             <div class="wrapper-gameSelect">
                 <p title="Game name" class="gameName">Game: </p>
-                <!-- <label for="nomeGioco" title="Game name">Gioco: </label> -->
                 <select type="text" id="gameSelect" name="gameSelect" title="Game name">
                     <option value="-1" selected="selected">Select one of the available options</option>
                 </select>
@@ -45,7 +45,7 @@
             </div>
         </div>
 
-        <div class="right">
+        <div class="wrapper-right">
             <button id="search" type="button" disabled>Cerca</button>
         </div>
     </header>
@@ -57,9 +57,9 @@
     </div>
 
     <main class="result">
-        <div class="left" id="left-result">
+        <div class="left-result" id="left-result">
             <div class="header-result">
-                    
+
             </div>
             <h4 id="modName"></h4>
             <p id="modAuthor"></p>
@@ -84,7 +84,7 @@
 
             </div>
         </div>
-        <div class="right" id="right-result">
+        <div class="right-result" id="right-result">
             <div id="container">
                 <h2>Test</h2>
                 <p>paragrafo</p>

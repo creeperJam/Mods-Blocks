@@ -210,25 +210,25 @@ async function showModInfo() {
         <button type="button" title="tab button" value="screenshots" class="tab-button" data-tab>Screenshots</button>
     </li>
     <li class="tab">
-        <button type="button" title="source" value="source" class="tab-button" data-tab>
+        <button href="${mod['links']['sourceUrl']}" type="button" title="source" value="source" class="tab-button" data-tab>
             <a href="${mod['links']['sourceUrl']}" class="tab-link">Source</a>
             <img title="external link" src="immagini/external-link.svg" alt="external link" class="svg"/>
         </button>
     </li>
     <li class="tab">
-        <button type="button" title="website" value="website" class="tab-button" data-tab>
+        <button href="${mod['links']['websiteUrl']}" type="button" title="website" value="website" class="tab-button" data-tab>
             <a href="${mod['links']['websiteUrl']}" class="tab-link">Website</a>
             <img title="external link" src="immagini/external-link.svg" alt="external link" class="svg"/>
         </button>
     </li>
     <li class="tab">
-        <button type="button" title="issues" value="issues" class="tab-button" data-tab>
+        <button href="${mod['links']['IssuesUrl']}" type="button" title="issues" value="issues" class="tab-button" data-tab>
             <a href="${mod['links']['IssuesUrl']}" class="tab-link">Issues</a>
             <img title="external link" src="immagini/external-link.svg" alt="external link" class="svg"/>
         </button>
     </li>
     <li class="tab">
-        <button type="button" title="wiki" value="wiki" class="tab-button" data-tab>
+        <button href="${mod['links']['wikiUrl']}" type="button" title="wiki" value="wiki" class="tab-button" data-tab>
             <a href="${mod['links']['wikiUrl']}" class="tab-link">Wiki</a>
             <img title="external link" src="immagini/external-link.svg" alt="external link" class="svg"/>
         </button>
@@ -432,21 +432,21 @@ async function insertFilesTab() {
                 tBodyContent.innerHTML += `<th scope="row">${i+1}</th>`;
                 if (file['fileName'].length > 28) {
                     tBodyContent.innerHTML += `
-                                <td class="gamefileName" title="${file['fileName']}">${file['fileName'].substring(0, 28)}...</td>
+                                <td class="gamefileName" data-tooltip="${file['fileName']}">${file['fileName'].substring(0, 28)}...</td>
                             `;
                 } else {
                     tBodyContent.innerHTML += `
-                                <td class="gamefileName" title="${file['fileName']}">${file['fileName']}</td>
+                                <td class="gamefileName" data-tooltip="${file['fileName']}">${file['fileName']}</td>
                             `;
                 }
                 // console.log(tBodyContent);
 
                 // TODO: per le versioni del gioco creare una funzione apposita che si occupa di riconoscere le versioni e di metterle in ordine, togliendo il modLoader dall'array
                 tBodyContent.innerHTML += `
-                            <td class="gamefileDate" title="${file['fileDate']}">${file['fileDate'].slice(0, file['fileDate'].indexOf("T"))}</td>
-                            <td class="gamefileVersions">${gameVersions(file['gameVersions'])}</td>
-                            <td class="gamefileModLoader">${modLoaders[arr[i]['modLoader']]}</td>
-                            <td class="gamefileDownload"><a class="downloadMod" href="${downloadUrl}" download="Mod">Download</a></td>
+                            <td class="gamefileDate" data-tooltip="${file['fileDate']}">${file['fileDate'].slice(0, file['fileDate'].indexOf("T"))}</td>
+                            <td class="gamefileVersions" data-tooltip="${gameVersions(file['gameVersions'])}">${gameVersions(file['gameVersions'])}</td>
+                            <td class="gamefileModLoader" data-tooltip="${modLoaders[arr[i]['modLoader']]}">${modLoaders[arr[i]['modLoader']]}</td>
+                            <td class="gamefileDownload" data-tooltip="${downloadUrl}"><a class="downloadMod" href="${downloadUrl}" download="Mod">Download</a></td>
                         `;
                 // console.log(tBodyContent);
 
