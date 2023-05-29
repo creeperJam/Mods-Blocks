@@ -98,14 +98,16 @@ function autocomplete(e) {
     input.replaceAll(" ", "%20");
 
     if (modNameInput.value.trim() == "") {
-        autocompleteList.innerHTML = "";
+        // autocompleteList.innerHTML = "";
         document.getElementsByClassName('result')[0].style.visibility = 'visible';
+        searchButton.disabled = true;
         return;
     }
 
     // console.log(input);
     if (input.length > 0 && input != vecchioInput && e.code != "Enter") {
         clearTimeout(debounceTimeout);
+        searchButton.disabled = false;
         debounceTimeout = setTimeout(async () => {
             await fetchRequest(input);
 
@@ -121,7 +123,7 @@ function autocomplete(e) {
                 let span = document.createElement("span");
 
                 div.classList.add("autocomplete-item");
-                div.classList.add("modName");
+                // div.classList.add("modName");
                 spacing.classList.add('modName');
                 span.setAttribute("value", element['id']);
 
@@ -131,11 +133,10 @@ function autocomplete(e) {
                 span.innerHTML = `<strong>${element['name'].substring(inizioStringa, inizioStringa + modNameInput.value.length)}</strong>`;
                 span.innerHTML += `${element['name'].substring(inizioStringa + modNameInput.value.length)} - ${element['id']}`;
                 // span.innerHTML = element['name'];
-                
-                
+
+
                 div.appendChild(spacing);
                 div.appendChild(span);
-
                 addEventListeners(span);
 
                 autocompleteList.appendChild(div);
@@ -146,19 +147,82 @@ function autocomplete(e) {
     vecchioInput = input;
 }
 
+var tabContent = document.getElementById("tab-content");
 function clickAutocomplete(element) {
     modNameInput.value = element.textContent.substring(0, element.textContent.indexOf(" -"));
     selectedModId = element.getAttribute("value");
     autocompleteList.innerHTML = "";
-    document.getElementsByClassName('result')[0].style.visibility = 'visible';
 
+    let mainElement = document.getElementsByTagName("main")[0];
+    mainElement.innerHTML = "";
+    // Creation of left and right sides core containers of the result
+    let leftResult = document.createElement("div");
+    let rightResult = document.createElement("div");
+    leftResult.classList.add("left-result");
+    rightResult.classList.add("right-result");
+    leftResult.id = "left-result";
+    rightResult.id = "right-result";
+
+    // Creation of the left side of the result
+    let modImageContainer = document.createElement("div");
+    let modImageElement = document.createElement("img");
+    let modNameElement = document.createElement("h4");
+    let modAuthorElement = document.createElement("p");
+    let tabsNavElement = document.createElement("div");
+    let pageSelector = document.createElement("div");
+    tabContent = document.createElement("div");
+
+    modImageContainer.id = "mod-image-container";
+    modImageElement.id = "mod-image";
+    modNameElement.id = "mod-name";
+    modAuthorElement.id = "mod-author";
+    tabsNavElement.id = "tabs-nav";
+    pageSelector.id = "page-selector";
+    tabContent.id = "tab-content";
+
+    modImageContainer.appendChild(modImageElement);
+    modImageContainer.appendChild(modNameElement);
+    leftResult.appendChild(modImageContainer);
+    leftResult.appendChild(modAuthorElement);
+    leftResult.appendChild(tabsNavElement);
+    leftResult.appendChild(pageSelector);
+    leftResult.appendChild(tabContent);
+
+    // console.log(leftResult);
+
+    // Creation of the right side of the result
+    let container = document.createElement("div");
+    container.id = "container";
+    rightResult.appendChild(container);
+
+    let containerTitle = document.createElement("h2");
+    let containerContent = document.createElement("div");
+    let creationDate = document.createElement("p");
+    let lastUpdate = document.createElement("p");
+    let downloads = document.createElement("p");
+
+    containerContent.id = "container-content";
+    containerTitle.innerText = "Mod Info";
+
+    container.appendChild(containerContent);
+    container.appendChild(containerTitle);
+    container.appendChild(creationDate);
+    container.appendChild(lastUpdate);
+    container.appendChild(downloads);
+
+
+    mainElement.appendChild(leftResult);
+    mainElement.appendChild(rightResult);
     focus = -1;
+
+    document.getElementsByClassName('result')[0].style.visibility = 'visible';
+    // return 1;
 }
 
 var selectedModId = null;
 function addEventListeners(element) {
-    element.addEventListener("click", function () {
-        clickAutocomplete(element);
+    element.addEventListener("click", async function () {
+        await clickAutocomplete(element);
         showModInfo();
     });
 }
@@ -176,17 +240,18 @@ async function showModInfo() {
 
     // console.log(mod);
 
-    document.getElementById("modName").innerHTML = mod['name'];
+    document.getElementById("mod-image").src = mod['logo']['url'];
+    document.getElementById("mod-name").innerHTML = " - " + mod['name'];
     // document.getElementById("modId").innerHTML = mod['id'];
     // document.getElementById("modDescription").innerHTML = mod['summary'];
-    document.getElementById("modAuthor").innerHTML = "By: ";
+    document.getElementById("mod-author").innerHTML = "By: ";
     for (let i = 0; i < mod['authors'].length; i++) {
-        if (i == mod['authors'].length - 1) document.getElementById("modAuthor").innerHTML += mod['authors'][i]['name'];
-        else document.getElementById("modAuthor").innerHTML += mod['authors'][i]['name'] + ", ";
+        if (i == mod['authors'].length - 1) document.getElementById("mod-author").innerHTML += mod['authors'][i]['name'];
+        else document.getElementById("mod-author").innerHTML += mod['authors'][i]['name'] + ", ";
     }
     // document.getElementById("modDownloads").innerHTML = mod['downloadCount'];
     // document.getElementById("modDate").innerHTML = mod['dateReleased'];
-    let tabContent = document.getElementsByClassName("tab-content")[0];
+    let tabContent = document.getElementById("tab-content");
     tabContent.style.flexDirection = "column";
 
     let description = await fetch(linkApiCurseForge + getModDescription.replace("{modId}", selectedModId), {
@@ -198,7 +263,7 @@ async function showModInfo() {
 
     tabContent.innerHTML = `<p>${description}</p>`;
 
-    document.getElementsByClassName('tabs-nav')[0].innerHTML = `
+    document.getElementById('tabs-nav').innerHTML = `
     <ul class="tabs">
     <li class="tab">
         <button type="button" title="tab button" value="description" class="tab-button" data-tab>Description</button>
@@ -234,7 +299,7 @@ async function showModInfo() {
         </button>
     </li>
 </ul>
-    `
+    `;
 
     let tabButtons = document.getElementsByClassName("tab-button");
     for (let index = 0; index < tabButtons.length; index++) {
@@ -277,6 +342,7 @@ modNameInput.addEventListener("keydown", function (e) {
 modNameInput.addEventListener("focusout", function (e) {
     setTimeout(function () {
         autocompleteList.innerHTML = "";
+        document.getElementsByClassName("result")[0].style.visibility = "visible";
     }, 300);
 });
 
@@ -290,8 +356,9 @@ document.addEventListener("keypress", function (e) {
 const getFile = "/v1/mods/{modId}/files/{fileId}";
 const getModDescription = "/v1/mods/{modId}/description";
 var arr;
-var tabContent = document.getElementsByClassName("tab-content")[0];
 function openTab(e) {
+    // TODO: funziona tutto correttamente, unico problema è che se durante il caricamento della tabella con i file si cambia tab e poi si torna subito nei nella tabella dei file,
+    //  vengono caricati i file della tabella precedente e di quella attuale
 
     switch (this.value) {
         case "description":
@@ -374,25 +441,34 @@ function gameVersions(gameVersionsArray) {
     return gameVersionsString.sort().toString();
 }
 
+const months = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec"
+];
 async function insertFilesTab() {
-    let loading = document.createElement("img");
+    // let loading = document.createElement("img"); // Metodo iniziale per indiciare il caricamento
     let modfilesNumRows = 20;
     let numPages = Math.ceil(mod['latestFilesIndexes'].length / modfilesNumRows);
     let pageSelector = document.getElementById("page-selector");
 
-    if (modFilePage != 0) pageSelector.innerHTML = `<button class="page-button" id="page-previous" alt="previous" onclick="changePage(${modFilePage - 1})"><img src="./immagini/freccia.png"/></button>`;
-    else pageSelector.innerHTML = `<button class="page-button" id="page-previous" alt="previous" onclick="changePage(${modFilePage - 1})" disabled><img src="./immagini/freccia.png"/></button>`;
-
-    for (let i = ((modFilePage - 2 < 0) ? 0 : (modFilePage - 2)); i <= ((modFilePage + 2 > numPages - 1) ? (numPages - 1) : (modFilePage + 2)); i++) {
-        // console.log("Current page: " + i)
-
-        if (i == modFilePage) pageSelector.innerHTML += `<button class="page-button" onclick="changePage(${i})" disabled number="true"><strong>${i + 1}</strong></button>`;
-        else pageSelector.innerHTML += `<button class="page-button" onclick="changePage(${i})">${i + 1}</button>`;
-        // page.innerHTML += `<button class="page-button" onclick="changePage(${i + 1})">${i + 1}</button>`;
-    }
-    if (modFilePage != numPages - 1) pageSelector.innerHTML += `<button class="page-button" id="page-next" alt="next" onclick="changePage(${modFilePage + 1})"><img src="./immagini/freccia.png"/></button>`;
-    else pageSelector.innerHTML += `<button class="page-button" id="page-next" alt="next" onclick="changePage(${modFilePage + 1})" disabled><img src="./immagini/freccia.png"/></button>`;
-
+    pageSelector.classList.add("loading");
+    pageSelector.innerHTML = "";
+    let progress = document.createElement("progress");
+    progress.id = "loading-bar";
+    progress.value = 0;
+    progress.max = 20;
+    pageSelector.appendChild(progress);
+    // pageSelector.innerHTML = `<progress id="loading-bar" value="0" max="20"></progress>`;
 
 
     tabContent.style.flexDirection = "row";
@@ -410,7 +486,7 @@ async function insertFilesTab() {
                 <tbody id="files-body">`
 
 
-    document.getElementById("files-table").setAttribute("aria-busy", "true");
+    // document.getElementById("files-table").setAttribute("aria-busy", "true"); // Metodo precedente per indicare il caricamento
 
     arr = mod['latestFilesIndexes'].slice(modfilesNumRows * modFilePage, modfilesNumRows * (modFilePage + 1));
 
@@ -429,7 +505,7 @@ async function insertFilesTab() {
                 let tBodyContent = document.createElement("tr");
                 // console.log(tabContent);
 
-                tBodyContent.innerHTML += `<th scope="row">${i+1}</th>`;
+                tBodyContent.innerHTML += `<th scope="row">${i + 1}</th>`;
                 if (file['fileName'].length > 28) {
                     tBodyContent.innerHTML += `
                                 <td class="gamefileName" data-tooltip="${file['fileName']}">${file['fileName'].substring(0, 28)}...</td>
@@ -441,20 +517,37 @@ async function insertFilesTab() {
                 }
                 // console.log(tBodyContent);
 
-                // TODO: per le versioni del gioco creare una funzione apposita che si occupa di riconoscere le versioni e di metterle in ordine, togliendo il modLoader dall'array
+                let date = (new Date(file['fileDate']).getDate()) + "-" + months[(new Date(file['fileDate']).getMonth())] + "-" + (new Date(file['fileDate']).getFullYear());
+                let dateTooltip = date + " @ " + (new Date(file['fileDate']).getHours()) + ":" + (new Date(file['fileDate']).getMinutes()) + ":" + (new Date(file['fileDate']).getSeconds());
+                // console.log(date);
                 tBodyContent.innerHTML += `
-                            <td class="gamefileDate" data-tooltip="${file['fileDate']}">${file['fileDate'].slice(0, file['fileDate'].indexOf("T"))}</td>
-                            <td class="gamefileVersions" data-tooltip="${gameVersions(file['gameVersions'])}">${gameVersions(file['gameVersions'])}</td>
-                            <td class="gamefileModLoader" data-tooltip="${modLoaders[arr[i]['modLoader']]}">${modLoaders[arr[i]['modLoader']]}</td>
-                            <td class="gamefileDownload" data-tooltip="${downloadUrl}"><a class="downloadMod" href="${downloadUrl}" download="Mod">Download</a></td>
+                            <td class="gamefileDate" data-tooltip="${dateTooltip}">${date}</td>
+                            <td class="gamefileVersions">${gameVersions(file['gameVersions'])}</td>
+                            <td class="gamefileModLoader">${modLoaders[arr[i]['modLoader']]}</td>
+                            <td class="gamefileDownload"><a class="downloadMod" href="${downloadUrl}" download="Mod">Download</a></td>
                         `;
                 // console.log(tBodyContent);
 
                 document.getElementById("files-body").appendChild(tBodyContent);
+                progress.value++;
             });
     }
 
-    document.getElementById("files-table").setAttribute("aria-busy", "false");
+    if (modFilePage == 0) pageSelector.innerHTML = `<button class="page-button" id="page-previous" alt="previous" onclick="changePage(${modFilePage - 1})" disabled><img src="./immagini/freccia.png"/></button>`;
+    else pageSelector.innerHTML = `<button class="page-button" id="page-previous" alt="previous" onclick="changePage(${modFilePage - 1})"><img src="./immagini/freccia.png"/></button>`;
+
+    for (let i = ((modFilePage - 2 < 0) ? 0 : (modFilePage - 2)); i <= ((modFilePage + 2 > numPages - 1) ? (numPages - 1) : (modFilePage + 2)); i++) {
+        // console.log("Current page: " + i)
+
+        if (i == modFilePage) pageSelector.innerHTML += `<button class="page-button" onclick="changePage(${i})" disabled number="true" disabled><strong>${i + 1}</strong></button>`;
+        else pageSelector.innerHTML += `<button class="page-button" onclick="changePage(${i})">${i + 1}</button>`;
+        // page.innerHTML += `<button class="page-button" onclick="changePage(${i + 1})">${i + 1}</button>`;
+    }
+    if (modFilePage == numPages - 1) pageSelector.innerHTML += `<button class="page-button" id="page-next" alt="next" onclick="changePage(${modFilePage + 1})" disabled><img src="./immagini/freccia.png"/></button>`;
+    else pageSelector.innerHTML += `<button class="page-button" id="page-next" alt="next" onclick="changePage(${modFilePage + 1})"><img src="./immagini/freccia.png"/></button>`;
+
+    pageSelector.classList.remove("loading");
+    // document.getElementById("files-table").setAttribute("aria-busy", "false"); // Metodo precedente per indicare il caricamento
 }
 
 function changePage(i) {
@@ -477,3 +570,5 @@ function insertScreenshotsTab() {
         });
     }
 }
+
+// TODO: aggiungere la creazione di una tabella
