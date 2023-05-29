@@ -351,16 +351,21 @@ span {
     transform: rotate(180deg);
 }
 
-#container {
+#rightResultContainer {
     width: 100%;
     background-color: #0e1419;
     border-radius: 15px;
     padding: 5% 10%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    position: relative;
+    top: 10.3cm;
 }
 
-/* .page-button:disabled[number="true"] {
+.page-button:disabled[number="true"] {
     opacity: 100;
-} */
+}
 
 progress {
     width: 50%;
@@ -370,3 +375,24 @@ progress {
     justify-content: center;
 }
 
+.modInfo {
+    margin-bottom: 15px;
+}
+
+#modInfoContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+
+    padding-bottom: 25px;
+    border-bottom: 1px solid gray;
+}
+
+#modCategoriesContainer {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    
+    padding-top: 25px;
+}

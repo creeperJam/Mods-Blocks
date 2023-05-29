@@ -20,6 +20,20 @@ const headers = {
     'Accept': 'application/json',
     'x-api-key': apiKey
 };
+const months = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec"
+];
 
 var modFilePage = 0;
 var selectedTab = -1;
@@ -191,24 +205,37 @@ function clickAutocomplete(element) {
     // console.log(leftResult);
 
     // Creation of the right side of the result
-    let container = document.createElement("div");
-    container.id = "container";
-    rightResult.appendChild(container);
+    let rightResultContainer = document.createElement("div");
+    let modInfoContainer = document.createElement("div");
+    let modCategoriesContainer = document.createElement("div");
+
+    rightResultContainer.id = "rightResultContainer";
+    modInfoContainer.id = "modInfoContainer";
+    modCategoriesContainer.id = "modCategoriesContainer";
+
+    rightResult.appendChild(rightResultContainer);
+    rightResultContainer.appendChild(modInfoContainer);
+    rightResultContainer.appendChild(modCategoriesContainer);
 
     let containerTitle = document.createElement("h2");
-    let containerContent = document.createElement("div");
     let creationDate = document.createElement("p");
     let lastUpdate = document.createElement("p");
     let downloads = document.createElement("p");
 
-    containerContent.id = "container-content";
+    // containerTitle.id = "containerTitle";
     containerTitle.innerText = "Mod Info";
+    creationDate.id = "creationDate";
+    lastUpdate.id = "lastUpdate";
+    downloads.id = "downloads";
+    containerTitle.classList.add("modInfo");
+    creationDate.classList.add("modInfo");
+    lastUpdate.classList.add("modInfo");
+    downloads.classList.add("modInfo");
 
-    container.appendChild(containerContent);
-    container.appendChild(containerTitle);
-    container.appendChild(creationDate);
-    container.appendChild(lastUpdate);
-    container.appendChild(downloads);
+    modInfoContainer.appendChild(containerTitle);
+    modInfoContainer.appendChild(creationDate);
+    modInfoContainer.appendChild(lastUpdate);
+    modInfoContainer.appendChild(downloads);
 
 
     mainElement.appendChild(leftResult);
@@ -307,6 +334,24 @@ async function showModInfo() {
     }
     selectedTab = 0;
     // console.log(mod);
+
+    let creationDateValue = new Date(mod['dateCreated']);
+    creationDate.innerHTML = "Created: " + creationDateValue.getDate() + "-" + months[creationDateValue.getMonth()] + "-" + creationDateValue.getFullYear();
+    let lastUpdateDate = new Date(mod['dateModified']);
+    lastUpdate.innerHTML = "Last Update: " + lastUpdateDate.getDate() + "-" + months[lastUpdateDate.getMonth()] + "-" + lastUpdateDate.getFullYear();
+    downloads.innerHTML = "Downloads: " + (mod['downloadCount']).toLocaleString().replace(/,/g," ",);
+
+    let categories = mod['categories'];
+
+    categories.forEach(category => {
+        let categoryElement = document.createElement("span");
+        categoryElement.classList.add("category");
+        categoryElement.innerHTML = category['name'];
+        categoryElement.addEventListener("click", function () {
+            window.open(category['url']);
+        });
+        document.getElementById("modCategoriesContainer").appendChild(categoryElement);
+    })
 }
 
 modNameInput.addEventListener("keydown", function (e) {
@@ -441,20 +486,6 @@ function gameVersions(gameVersionsArray) {
     return gameVersionsString.sort().toString();
 }
 
-const months = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec"
-];
 async function insertFilesTab() {
     // let loading = document.createElement("img"); // Metodo iniziale per indiciare il caricamento
     let modfilesNumRows = 20;
@@ -466,7 +497,7 @@ async function insertFilesTab() {
     let progress = document.createElement("progress");
     progress.id = "loading-bar";
     progress.value = 0;
-    progress.max = 20;
+    
     pageSelector.appendChild(progress);
     // pageSelector.innerHTML = `<progress id="loading-bar" value="0" max="20"></progress>`;
 
@@ -489,6 +520,7 @@ async function insertFilesTab() {
     // document.getElementById("files-table").setAttribute("aria-busy", "true"); // Metodo precedente per indicare il caricamento
 
     arr = mod['latestFilesIndexes'].slice(modfilesNumRows * modFilePage, modfilesNumRows * (modFilePage + 1));
+    progress.max = arr.length;
 
     for (let i = 0; i < arr.length; i++) {
         await fetch(linkApiCurseForge + getFile.replaceAll("{modId}", selectedModId).replaceAll("{fileId}", arr[i]['fileId']), {
@@ -518,7 +550,7 @@ async function insertFilesTab() {
                 // console.log(tBodyContent);
 
                 let date = (new Date(file['fileDate']).getDate()) + "-" + months[(new Date(file['fileDate']).getMonth())] + "-" + (new Date(file['fileDate']).getFullYear());
-                let dateTooltip = date + " @ " + (new Date(file['fileDate']).getHours()) + ":" + (new Date(file['fileDate']).getMinutes()) + ":" + (new Date(file['fileDate']).getSeconds());
+                let dateTooltip = date + " @ " + ("0" + new Date(file['fileDate']).getHours()).slice(-2) + ":" + ("0" + new Date(file['fileDate']).getMinutes()).slice(-2) + ":" + ("0" + new Date(file['fileDate']).getSeconds()).slice(-2);
                 // console.log(date);
                 tBodyContent.innerHTML += `
                             <td class="gamefileDate" data-tooltip="${dateTooltip}">${date}</td>
