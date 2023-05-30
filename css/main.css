@@ -1,5 +1,36 @@
 /* Generale */
+a:link {
+  text-decoration: none;
+}
+
+a:visited {
+  text-decoration: none;
+}
+
+a:hover,
+.category:hover {
+  text-decoration: underline;
+}
+
+a:active {
+  text-decoration: none;
+}
+
+#webApp-name > a,
+#webApp-name > a:hover {
+  text-decoration: none;
+  color: hsl(205, 16%, 77%);
+}
+
+nav {
+  padding: 0 2.5%;
+}
+
 form {
+  margin: 0;
+}
+
+#page-description > *{
   margin: 0;
 }
 

@@ -142,9 +142,8 @@ async function mostraInfo(e) {
     itemDescription.textContent = oggettoJSON['description'];
     // image.src = linkApiImmagini.replace("itemName", itemName)
     // image.src = linkApiImmagini.replace("itemName", itemName.textContent.replaceAll(" ", '_').toLowerCase());
-    image.src = "./immagini/loading.gif";
-    image.style.width = "30px";
-    image.style.height = "30px";
+    image.style.width = "128px";
+    image.style.height = "128px";
 
     const options = {
         method: "GET"
@@ -181,9 +180,6 @@ async function mostraInfo(e) {
     //     let dataurl = canvas.toDataURL();
     //     image.src = dataurl;
     // }
-
-    image.style.width = "128px";
-    image.style.height = "128px";
 }
 
 function closeAllLists() {
