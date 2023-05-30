@@ -12,6 +12,23 @@
     padding-bottom: 20px;
 }
 
+@media (max-width: 650px) {
+    .wrapper {
+        grid-template-columns: 65% 35%;
+        gap: 10px 10px;
+    }
+}
+
+@media (max-width: 450px) {
+    #search {
+        font-size: small;
+    }
+
+    .wrapper {
+        grid-template-columns: 60% 40%;
+    }
+}
+
 .wrapper-right {
     grid-area: cerca;
 }
@@ -449,15 +466,9 @@ progress {
     margin: 0;
 }
 
-@media (min-width: 1201px) {
-    .modResultImage>img {
-        width: 200px;
-    }
 
-    .modResultContainer {
-        grid-template-rows: 1fr 1.5fr 0.5fr 0.5fr;
-        grid-template-columns: 200px 1fr;
-    }
+.modResultImage>img {
+    width: 200px;
 }
 
 @media (max-width: 1200px) {

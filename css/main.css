@@ -70,3 +70,9 @@ input:hover::placeholder {
   background-color: var(--primary) !important;
   color: white !important;
 }
+
+@media (max-width: 550px) {
+  #index {
+      display: none;
+  }
+}

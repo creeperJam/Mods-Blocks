@@ -546,7 +546,7 @@ async function insertFilesTab() {
 
 
     tabContent.style.flexDirection = "row";
-    tabContent.innerHTML = `<table id="files-table">
+    tabContent.innerHTML = `<figure><table id="files-table">
                 <thead id="files-header">
                     <tr>
                         <th scope="col">#</th>
