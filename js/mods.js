@@ -50,7 +50,7 @@ gameSelect.addEventListener("change", function () {
     }
 });
 modNameInput.addEventListener("keyup", autocomplete, false);
-
+searchButton.addEventListener("click", search, false);
 
 
 // Spiegazione api usate:
@@ -87,13 +87,13 @@ function gameOptionsAdd() {
 // aggiunta dei tag option per i nomi delle mod dopo aver selezionato un gioco dal select
 const getMods = "/v1/mods/search"; // + gameId + "&searchFilter=" + modNameInput.value + "&pageSize=15
 var risultati = new Array();
-const pageSizeAutocomplete = 15;
+var pageSize = 20;
 var debounceTimeout = 0;
 var vecchioInput = "";
 
 async function fetchRequest(input) {
     risultati = new Array();
-    await fetch(linkApiCurseForge + getMods + "?gameId=" + gameId + "&searchFilter=" + input + "&sortOrder=desc" + "&sortType=1" + "&pagesize=" + pageSizeAutocomplete, {
+    await fetch(linkApiCurseForge + getMods + "?gameId=" + gameId + "&searchFilter=" + input + "&sortOrder=desc" + "&sortType=1" + "&pagesize=" + pageSize, {
         method: 'GET',
         headers: headers
     })
@@ -112,8 +112,8 @@ function autocomplete(e) {
     input.replaceAll(" ", "%20");
 
     if (modNameInput.value.trim() == "") {
-        // autocompleteList.innerHTML = "";
-        document.getElementsByClassName('result')[0].style.visibility = 'visible';
+        autocompleteList.innerHTML = "";
+        document.getElementById('main').style.visibility = 'visible';
         searchButton.disabled = true;
         return;
     }
@@ -127,8 +127,7 @@ function autocomplete(e) {
 
             // console.log(risultati);
             autocompleteList.innerHTML = "";
-            let n = risultati.length;
-            document.getElementsByClassName('result')[0].style.visibility = 'hidden';
+            document.getElementById('main').style.visibility = 'hidden';
             risultati.forEach((element, index) => {
                 // console.log("ci sei?")
                 let inizioStringa = element['name'].toLowerCase().indexOf(modNameInput.value.toLowerCase()); // Indice in cui inizia la stringa cercata
@@ -141,7 +140,7 @@ function autocomplete(e) {
                 spacing.classList.add('modName');
                 span.setAttribute("value", element['id']);
 
-                if (index == n - 1) span.setAttribute("style", "border-radius: 0 0 var(--border-radius) var(--border-radius)");
+                if (index == risultati.length - 1) span.setAttribute("style", "border-radius: 0 0 var(--border-radius) var(--border-radius)");
                 else span.setAttribute("style", "border-radius: 0");
 
                 span.innerHTML = `<strong>${element['name'].substring(inizioStringa, inizioStringa + modNameInput.value.length)}</strong>`;
@@ -162,13 +161,17 @@ function autocomplete(e) {
 }
 
 var tabContent = document.getElementById("tab-content");
-function clickAutocomplete(element) {
-    modNameInput.value = element.textContent.substring(0, element.textContent.indexOf(" -"));
-    selectedModId = element.getAttribute("value");
+function modInfoStructureCreator(modName, modId) {
+    let main = document.getElementById('main');
+    main.style = "";
+    main.innerHTML = "";
+    main.classList.remove("results");
+    main.classList.add("result");
+
+    modNameInput.value = modName;
+    selectedModId = modId;
     autocompleteList.innerHTML = "";
 
-    let mainElement = document.getElementsByTagName("main")[0];
-    mainElement.innerHTML = "";
     // Creation of left and right sides core containers of the result
     let leftResult = document.createElement("div");
     let rightResult = document.createElement("div");
@@ -238,18 +241,18 @@ function clickAutocomplete(element) {
     modInfoContainer.appendChild(downloads);
 
 
-    mainElement.appendChild(leftResult);
-    mainElement.appendChild(rightResult);
+    main.appendChild(leftResult);
+    main.appendChild(rightResult);
     focus = -1;
 
-    document.getElementsByClassName('result')[0].style.visibility = 'visible';
+    document.getElementById('main').style.visibility = 'visible';
     // return 1;
 }
 
 var selectedModId = null;
 function addEventListeners(element) {
     element.addEventListener("click", async function () {
-        await clickAutocomplete(element);
+        await modInfoStructureCreator(element.textContent.substring(0, element.textContent.indexOf(" -")), element.getAttribute("value"));
         showModInfo();
     });
 }
@@ -258,6 +261,8 @@ function addEventListeners(element) {
 const getMod = "/v1/mods/";
 var mod;
 async function showModInfo() {
+
+
     mod = await fetch(linkApiCurseForge + getMod + selectedModId, {
         method: "GET",
         headers: headers
@@ -339,7 +344,7 @@ async function showModInfo() {
     creationDate.innerHTML = "Created: " + creationDateValue.getDate() + "-" + months[creationDateValue.getMonth()] + "-" + creationDateValue.getFullYear();
     let lastUpdateDate = new Date(mod['dateModified']);
     lastUpdate.innerHTML = "Last Update: " + lastUpdateDate.getDate() + "-" + months[lastUpdateDate.getMonth()] + "-" + lastUpdateDate.getFullYear();
-    downloads.innerHTML = "Downloads: " + (mod['downloadCount']).toLocaleString().replace(/,/g," ",);
+    downloads.innerHTML = "Downloads: " + (mod['downloadCount']).toLocaleString().replace(/,/g, " ",);
 
     let categories = mod['categories'];
 
@@ -359,10 +364,18 @@ modNameInput.addEventListener("keydown", function (e) {
 
     switch (e.key) {
         case "Enter":
+            // console.log(focus)
             e.preventDefault();
-            if (focus == -1) focus = 0;
-            clickAutocomplete(elements[focus]);
-            showModInfo();
+            if (focus != -1) {
+                modInfoStructureCreator(elements[focus].textContent.substring(0, elements[focus].textContent.indexOf(" -")), elements[focus].getAttribute("value"));
+                showModInfo();
+            } else {
+                search();
+                setTimeout(function () {
+                    autocompleteList.innerHTML = "";
+                    document.getElementById("main").style.visibility = "visible";
+                }, 500);
+            }
             break;
 
         case "ArrowDown":
@@ -373,7 +386,7 @@ modNameInput.addEventListener("keydown", function (e) {
 
         case "ArrowUp":
             if (focus > -1) elements[focus].classList.remove("focus");
-            if (focus > 0) focus--;
+            if (focus > -1) focus--;
             elements[focus].classList.add("focus");
             break;
 
@@ -387,7 +400,7 @@ modNameInput.addEventListener("keydown", function (e) {
 modNameInput.addEventListener("focusout", function (e) {
     setTimeout(function () {
         autocompleteList.innerHTML = "";
-        document.getElementsByClassName("result")[0].style.visibility = "visible";
+        document.getElementById("main").style.visibility = "visible";
     }, 300);
 });
 
@@ -497,7 +510,7 @@ async function insertFilesTab() {
     let progress = document.createElement("progress");
     progress.id = "loading-bar";
     progress.value = 0;
-    
+
     pageSelector.appendChild(progress);
     // pageSelector.innerHTML = `<progress id="loading-bar" value="0" max="20"></progress>`;
 
@@ -604,3 +617,72 @@ function insertScreenshotsTab() {
 }
 
 // TODO: aggiungere la creazione di una tabella
+async function search() {
+    let main = document.getElementById('main');
+    main.classList.remove("result");
+    main.classList.add("results");
+    main.innerHTML = "";
+
+    /*
+    <select id="page-selector">
+    <option value="10">10</option>
+  <option value="20" selected="">20</option>
+    <option value="30">30</option>
+    <option value="40">40</option>
+    <option value="50">50</option>
+</select>
+    */
+    let pageSizeSelect = document.createElement("select");
+    pageSizeSelect.id = "page-selector";
+    pageSizeSelect.innerHTML = `
+        <option value="10">10</option>
+        <option value="20">20</option>
+        <option value="30">30</option>
+        <option value="40">40</option>
+        <option value="50">50</option>`;
+    pageSizeSelect.addEventListener("change", async () => {
+        pageSize = pageSizeSelect.value;
+        await fetchRequest(modNameInput.value);
+        search();
+    });
+
+    main.appendChild(pageSizeSelect);
+    risultati.forEach(element => {
+        let div = document.createElement("div");
+        div.classList.add("modResultContainer");
+        let modImageDiv = document.createElement("div");
+        let modNameDiv = document.createElement("div");
+        let modSummaryDiv = document.createElement("div");
+        let modDetailsDiv = document.createElement("div");
+        let modCategoriesDiv = document.createElement("div");
+
+        modImageDiv.classList.add("modResultImage");
+        modNameDiv.classList.add("modResultName");
+        modSummaryDiv.classList.add("modResultSummary");
+        modDetailsDiv.classList.add("modResultDetails");
+        modCategoriesDiv.classList.add("modResultCategories");
+
+        modImageDiv.innerHTML = `<img src="${element['logo']['url']}" alt="Mod image" width="200px">`;
+        modNameDiv.innerHTML = `<h3>${element['name']}</h3>`;
+        modSummaryDiv.innerHTML = `<p>${element['summary']}</p>`;
+        modDetailsDiv.innerHTML = `<p>${element['']}</p>`;
+        let categories = "";
+        element['categories'].forEach((category, index) => {
+            if (index == element['categories'].length - 1) categories += `<a href="${category['url']}">${category['name']}</a>`;
+            else categories += `<a href="${category['url']}">${category['name']}</a>  |  `;
+        });
+        modCategoriesDiv.innerHTML = `<span>${categories}</span>`;
+
+        div.appendChild(modImageDiv);
+        div.appendChild(modNameDiv);
+        div.appendChild(modSummaryDiv);
+        div.appendChild(modDetailsDiv);
+        div.appendChild(modCategoriesDiv);
+        div.addEventListener("click", function () {
+            mod = element;
+            modInfoStructureCreator(element['name'], element['id']);
+            showModInfo();
+        });
+        document.getElementById("main").appendChild(div);
+    });
+}

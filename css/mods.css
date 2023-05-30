@@ -23,7 +23,8 @@ a:visited {
     text-decoration: none;
 }
 
-a:hover {
+a:hover,
+.category:hover {
     text-decoration: underline;
 }
 
@@ -234,6 +235,7 @@ span {
 } */
 
 @media (max-width: 1100px) {
+
     .gameName,
     .modName {
         display: none !important;
@@ -326,9 +328,18 @@ span {
 } */
 
 #page-selector {
-    margin: 10px 0;
+    margin: 10px 7%;
     display: flex;
     align-items: center;
+    width: -moz-fit-content;
+    width: 100px;
+}
+
+@media (max-width: 768px) {
+    #page-selector {
+        width: 80%;
+        justify-content: center;
+    }
 }
 
 .page-button {
@@ -375,10 +386,6 @@ progress {
     justify-content: center;
 }
 
-.modInfo {
-    margin-bottom: 15px;
-}
-
 #modInfoContainer {
     display: flex;
     flex-direction: column;
@@ -388,11 +395,122 @@ progress {
     border-bottom: 1px solid gray;
 }
 
+.modInfo,
+.category {
+    padding: 0;
+    padding-left: var(--form-element-spacing-horizontal);
+    margin-bottom: 15px !important;
+}
+
 #modCategoriesContainer {
     display: flex;
     flex-direction: column;
     flex-wrap: wrap;
     justify-content: flex-start;
-    
+
     padding-top: 25px;
+}
+
+.modResultContainer {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    grid-template-rows: 1fr 1.5fr 0.5fr 0.5fr;
+    grid-auto-columns: 1fr;
+    gap: 2px 10px;
+    grid-auto-flow: row;
+    grid-template-areas:
+        "modResultImage modResultName"
+        "modResultImage modResultSummary"
+        "modResultImage modResultDetails"
+        "modResultCategories modResultCategories";
+
+    border-radius: 15px;
+    margin: 20px 5%;
+    padding: 15px;
+    background-color: #2b3b46;
+}
+
+.modResultImage {
+    grid-area: modResultImage;
+}
+
+.modResultName {
+    display: flex;
+    justify-content: center;
+    grid-area: modResultName;
+}
+
+.modResultSummary {
+    display: flex;
+    justify-content: center;
+    grid-area: modResultSummary;
+}
+
+.modResultDetails {
+    display: flex;
+    justify-content: center;
+    grid-area: modResultDetails;
+}
+
+.modResultCategories {
+    display: flex;
+    justify-content: center;
+    grid-area: modResultCategories;
+}
+
+.modResultCategories>span>a {
+    color: var(--color);
+}
+
+.modResultContainer>* {
+    display: flex;
+    flex-direction: column;
+}
+
+.modResultContainer>*>* {
+    margin: 0;
+}
+
+@media (min-width: 1201px) {
+    .modResultImage>img {
+        width: 200px;
+    }
+
+    .modResultContainer {
+        grid-template-rows: 1fr 1.5fr 0.5fr 0.5fr;
+        grid-template-columns: 200px 1fr;
+    }
+}
+
+@media (max-width: 1200px) {
+    .modResultImage>img {
+        width: 166px;
+    }
+
+    .modResultContainer {
+        grid-template-rows: 1fr 1fr 0.5fr 0.5fr;
+        grid-template-columns: 166px 1fr;
+    }
+}
+
+@media (max-width: 992px) {
+    .modResultImage>img {
+        width: 133px;
+    }
+
+    .modResultContainer {
+        grid-template-rows: 1fr 0.5fr 0.5fr 0.5fr;
+        grid-template-columns: 133px 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .modResultImage>img {
+        width: 100px;
+    }
+
+    .modResultContainer {
+        grid-template-rows: 0.5fr 0.5fr 0.5fr 0.5fr;
+        grid-template-columns: 100px 1fr;
+    }
 }
