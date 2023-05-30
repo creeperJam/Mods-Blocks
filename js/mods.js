@@ -50,7 +50,23 @@ gameSelect.addEventListener("change", function () {
     }
 });
 modNameInput.addEventListener("keyup", autocomplete, false);
-searchButton.addEventListener("click", search, false);
+searchButton.addEventListener("click", function () {
+    let pageSizeSelect = document.createElement("select");
+    pageSizeSelect.id = "pageSize-selector";
+    pageSizeSelect.innerHTML = `
+                    <option value="10">10</option>
+                    <option value="20" selected>20</option>
+                    <option value="30">30</option>
+                    <option value="40">40</option>
+                    <option value="50">50</option>`;
+    pageSizeSelect.addEventListener("change", async () => {
+        pageSize = pageSizeSelect.value;
+        await fetchRequest(modNameInput.value);
+        search();
+    });
+    document.getElementById("main").appendChild(pageSizeSelect);
+    search();
+}, false);
 
 
 // Spiegazione api usate:
@@ -370,6 +386,20 @@ modNameInput.addEventListener("keydown", function (e) {
                 modInfoStructureCreator(elements[focus].textContent.substring(0, elements[focus].textContent.indexOf(" -")), elements[focus].getAttribute("value"));
                 showModInfo();
             } else {
+                let pageSizeSelect = document.createElement("select");
+                pageSizeSelect.id = "pageSize-selector";
+                pageSizeSelect.innerHTML = `
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="30">30</option>
+                    <option value="40">40</option>
+                    <option value="50">50</option>`;
+                pageSizeSelect.addEventListener("change", async () => {
+                    pageSize = pageSizeSelect.value;
+                    await fetchRequest(modNameInput.value);
+                    search();
+                });
+                document.getElementById("main").appendChild(pageSizeSelect);
                 search();
                 setTimeout(function () {
                     autocompleteList.innerHTML = "";
@@ -621,32 +651,14 @@ async function search() {
     let main = document.getElementById('main');
     main.classList.remove("result");
     main.classList.add("results");
-    main.innerHTML = "";
+    // main.innerHTML = "";
 
-    /*
-    <select id="page-selector">
-    <option value="10">10</option>
-  <option value="20" selected="">20</option>
-    <option value="30">30</option>
-    <option value="40">40</option>
-    <option value="50">50</option>
-</select>
-    */
-    let pageSizeSelect = document.createElement("select");
-    pageSizeSelect.id = "page-selector";
-    pageSizeSelect.innerHTML = `
-        <option value="10">10</option>
-        <option value="20">20</option>
-        <option value="30">30</option>
-        <option value="40">40</option>
-        <option value="50">50</option>`;
-    pageSizeSelect.addEventListener("change", async () => {
-        pageSize = pageSizeSelect.value;
-        await fetchRequest(modNameInput.value);
-        search();
-    });
+    while (main.children.length > 1) {
+        if (main.children[1].id == "pageSize-selector") main.removeChild(main.children[0]);
+        else main.removeChild(main.children[1]);
+        
+    }
 
-    main.appendChild(pageSizeSelect);
     risultati.forEach(element => {
         let div = document.createElement("div");
         div.classList.add("modResultContainer");
@@ -665,7 +677,17 @@ async function search() {
         modImageDiv.innerHTML = `<img src="${element['logo']['url']}" alt="Mod image" width="200px">`;
         modNameDiv.innerHTML = `<h3>${element['name']}</h3>`;
         modSummaryDiv.innerHTML = `<p>${element['summary']}</p>`;
-        modDetailsDiv.innerHTML = `<p>${element['']}</p>`;
+        let downloadCount = Intl.NumberFormat('en-US', {
+            notation: "compact",
+            maximumFractionDigits: 1
+        }).format(element['downloadCount']);
+        // let latestRelease = await fetch(linkApiCurseForge + getFile.replace("{gameId}", element['id'])).replace("{fileId}", element['mainFileId'], {
+        //     method: "GET",
+        //     headers: headers
+        // }).then(response => response.json())
+        //     .then(responseJson => { return responseJson.data })
+        // let latestReleaseDate = "text";
+        modDetailsDiv.innerHTML = `<p>${downloadCount}</p>`; //<p>${downloadCount}</p><p>${downloadCount}</p><p>${downloadCount}</p> TODO: add the other details
         let categories = "";
         element['categories'].forEach((category, index) => {
             if (index == element['categories'].length - 1) categories += `<a href="${category['url']}">${category['name']}</a>`;
@@ -680,9 +702,10 @@ async function search() {
         div.appendChild(modCategoriesDiv);
         div.addEventListener("click", function () {
             mod = element;
+            selectedModId = element['id'];
             modInfoStructureCreator(element['name'], element['id']);
             showModInfo();
         });
-        document.getElementById("main").appendChild(div);
+        main.appendChild(div);
     });
 }
