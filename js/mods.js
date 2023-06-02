@@ -441,9 +441,12 @@ document.addEventListener("keypress", function (e) {
     }
 })
 
+const getFiles = "/v1/mods/{modId}/files?index={index}&pageSize=20";
 const getFile = "/v1/mods/{modId}/files/{fileId}";
 const getModDescription = "/v1/mods/{modId}/description";
-var arr;
+var files = new Array();
+var numPages;
+var numFiles;
 function openTab(e) {
     // TODO: funziona tutto correttamente, unico problema è che se durante il caricamento della tabella con i file si cambia tab e poi si torna subito nei nella tabella dei file,
     //  vengono caricati i file della tabella precedente e di quella attuale
@@ -462,7 +465,7 @@ function openTab(e) {
             selectedTab = 1;
 
             // Tentativo precedente alla versione funzionante sopra ^^^
-            // arr.forEach(element => async () => {
+            // files.forEach(element => async () => {
             //     let file = await fetch(linkApiCurseForge + getFile.replaceAll("{modId}", selectedModId).replaceAll("{fileId}", element['fileId']), {
             //         method: "GET",
             //         headers: headers
@@ -532,11 +535,10 @@ function gameVersions(gameVersionsArray) {
 async function insertFilesTab() {
     // let loading = document.createElement("img"); // Metodo iniziale per indiciare il caricamento
     let modfilesNumRows = 20;
-    let numPages = Math.ceil(mod['latestFilesIndexes'].length / modfilesNumRows);
     let pageSelector = document.getElementById("page-selector");
-
     pageSelector.classList.add("loading");
     pageSelector.innerHTML = "";
+
     let progress = document.createElement("progress");
     progress.id = "loading-bar";
     progress.value = 0;
@@ -562,50 +564,63 @@ async function insertFilesTab() {
 
     // document.getElementById("files-table").setAttribute("aria-busy", "true"); // Metodo precedente per indicare il caricamento
 
-    arr = mod['latestFilesIndexes'].slice(modfilesNumRows * modFilePage, modfilesNumRows * (modFilePage + 1));
-    progress.max = arr.length;
+    files = new Array();
+    await fetch(linkApiCurseForge + getFiles.replaceAll("{modId}", selectedModId).replaceAll("{index}", 0 + modFilePage * 20), {
+        method: "GET",
+        headers: headers
+    }).then(response => response.json()).then(responseJson => {
+        files = responseJson.data;
+        numPages = Math.ceil(responseJson.pagination['totalCount'] / modfilesNumRows);
+        numFiles = responseJson.pagination['resultCount'];
+    })
 
-    for (let i = 0; i < arr.length; i++) {
-        await fetch(linkApiCurseForge + getFile.replaceAll("{modId}", selectedModId).replaceAll("{fileId}", arr[i]['fileId']), {
-            method: "GET",
-            headers: headers
-        })
-            .then(response => response.json())
-            .then(responseJson => responseJson.data)
-            .then(file => {
-                // console.log(arr[i]);
-                // console.log(file)
-                let downloadUrl = file['downloadUrl'];
+    // let numPages = Math.ceil(mod['latestFilesIndexes'].length / modfilesNumRows);
+    // files = mod['latestFilesIndexes'].slice(modfilesNumRows * modFilePage, modfilesNumRows * (modFilePage + 1));
+    // let numFiles = files.length > 20 ? 20 : files.length;
+    progress.max = numFiles;
 
-                let tBodyContent = document.createElement("tr");
-                // console.log(tabContent);
+    for (let i = 0; i < numFiles; i++) {
+        // await fetch(linkApiCurseForge + getFile.replaceAll("{modId}", selectedModId).replaceAll("{fileId}", files[i]['id']), {
+        //     method: "GET",
+        //     headers: headers
+        // })
+        //     .then(response => response.json())
+        //     .then(responseJson => responseJson.data)
+        //     .then(file => {
+        // console.log(files[i]);
+        // console.log(file)
+        let file = files[i];
+        let downloadUrl = file['downloadUrl'];
 
-                tBodyContent.innerHTML += `<th scope="row">${i + 1}</th>`;
-                // if (file['fileName'].length > 28) {
-                //     tBodyContent.innerHTML += `
-                //                 <td class="gamefileName" data-tooltip="${file['fileName']}">${file['displayName'].substring(0, 28)}...</td>
-                //             `;
-                // } else {
-                tBodyContent.innerHTML += `
+        let tBodyContent = document.createElement("tr");
+        // console.log(tabContent);
+
+        tBodyContent.innerHTML += `<th scope="row">${i + 1}</th>`;
+        // if (file['fileName'].length > 28) {
+        //     tBodyContent.innerHTML += `
+        //                 <td class="gamefileName" data-tooltip="${file['fileName']}">${file['displayName'].substring(0, 28)}...</td>
+        //             `;
+        // } else {
+        tBodyContent.innerHTML += `
                             <td class="gamefileName" data-tooltip="${file['fileName']}">${file['displayName']}</td>
                         `;
-                // }
-                // console.log(tBodyContent);
+        // }
+        // console.log(tBodyContent);
 
-                let date = (new Date(file['fileDate']).getDate()) + "-" + months[(new Date(file['fileDate']).getMonth())] + "-" + (new Date(file['fileDate']).getFullYear());
-                let dateTooltip = date + " @ " + ("0" + new Date(file['fileDate']).getHours()).slice(-2) + ":" + ("0" + new Date(file['fileDate']).getMinutes()).slice(-2) + ":" + ("0" + new Date(file['fileDate']).getSeconds()).slice(-2);
-                // console.log(date);
-                tBodyContent.innerHTML += `
+        let date = (new Date(file['fileDate']).getDate()) + "-" + months[(new Date(file['fileDate']).getMonth())] + "-" + (new Date(file['fileDate']).getFullYear());
+        let dateTooltip = date + " @ " + ("0" + new Date(file['fileDate']).getHours()).slice(-2) + ":" + ("0" + new Date(file['fileDate']).getMinutes()).slice(-2) + ":" + ("0" + new Date(file['fileDate']).getSeconds()).slice(-2);
+        // console.log(date);
+        tBodyContent.innerHTML += `
                             <td class="gamefileDate" data-tooltip="${dateTooltip}">${date}</td>
                             <td class="gamefileVersions">${gameVersions(file['gameVersions'])}</td>
-                            <td class="gamefileModLoader">${modLoaders[arr[i]['modLoader']]}</td>
+                            <td class="gamefileModLoader">${getModLoader(file['gameVersions'])}</td>
                             <td class="gamefileDownload"><a class="downloadMod" href="${downloadUrl}" download="Mod">Download</a></td>
                         `;
-                // console.log(tBodyContent);
+        // console.log(tBodyContent);
 
-                document.getElementById("files-body").appendChild(tBodyContent);
-                progress.value++;
-            });
+        document.getElementById("files-body").appendChild(tBodyContent);
+        progress.value++;
+        // });
     }
 
     if (modFilePage == 0) pageSelector.innerHTML = `<button class="page-button" id="page-previous" alt="previous" onclick="changePage(${modFilePage - 1})" disabled><img src="./immagini/freccia.png"/></button>`;
@@ -623,6 +638,16 @@ async function insertFilesTab() {
 
     pageSelector.classList.remove("loading");
     // document.getElementById("files-table").setAttribute("aria-busy", "false"); // Metodo precedente per indicare il caricamento
+}
+
+function getModLoader(arr) {
+    let pattern = new RegExp("[0-9.]+");
+    let gameVersions = "";
+    arr.forEach(gameVersion => {
+        if (!pattern.test(gameVersion)) gameVersions += gameVersion + ", ";
+    });
+
+    return gameVersions.substring(0, gameVersions.lastIndexOf(','));
 }
 
 function changePage(i) {
