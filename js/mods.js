@@ -74,8 +74,12 @@ searchButton.addEventListener("click", function () {
 // https://docs.curseforge.com - Chiave API: $2a$10$bfD0D0C.HJ.DPma2VLUitO7luPMA0EmnJH8f8I7mocgmlbLKOI4r.
 // Spiegazione link curseForge: "https://api.curseforge.com/service"
 // Servizi offerti usati:
-//   GET /v1/games/ 
-//   GET /v1/mods/search/
+//   GET /v1/games/ - games
+//   GET /v1/mods/search/ - mods search
+//   GET /v1/mods/{modId} - mod details
+//   GET /v1/mods/{modId}/files - mod files;
+//   GET /v1/mods/{modId}/files/{fileId} - mod file details;
+//   GET /v1/mods/{modId}/description; - mod description
 
 // Functions
 
@@ -129,8 +133,9 @@ function autocomplete(e) {
 
     if (modNameInput.value.trim() == "") {
         autocompleteList.innerHTML = "";
-        document.getElementById('main').style.visibility = 'visible';
+        document.getElementById('main').style.display = 'grid';
         searchButton.disabled = true;
+        vecchioInput = "";
         return;
     }
 
@@ -143,7 +148,7 @@ function autocomplete(e) {
 
             // console.log(risultati);
             autocompleteList.innerHTML = "";
-            document.getElementById('main').style.visibility = 'hidden';
+            document.getElementById('main').style.display = 'none';
             risultati.forEach((element, index) => {
                 // console.log("ci sei?")
                 let inizioStringa = element['name'].toLowerCase().indexOf(modNameInput.value.toLowerCase()); // Indice in cui inizia la stringa cercata
@@ -261,7 +266,7 @@ function modInfoStructureCreator(modName, modId) {
     main.appendChild(rightResult);
     focus = -1;
 
-    document.getElementById('main').style.visibility = 'visible';
+    document.getElementById('main').style.display = 'grid';
     // return 1;
 }
 
@@ -274,12 +279,12 @@ function addEventListeners(element) {
 }
 
 
-const getMod = "/v1/mods/";
+const getMod = "/v1/mods/{modId}";
 var mod;
 async function showModInfo() {
 
 
-    mod = await fetch(linkApiCurseForge + getMod + selectedModId, {
+    mod = await fetch(linkApiCurseForge + getMod.replaceAll("{modId}", selectedModId), {
         method: "GET",
         headers: headers
     })
@@ -403,7 +408,7 @@ modNameInput.addEventListener("keydown", function (e) {
                 search();
                 setTimeout(function () {
                     autocompleteList.innerHTML = "";
-                    document.getElementById("main").style.visibility = "visible";
+                    document.getElementById("main").style.display = "grid";
                 }, 500);
             }
             break;
@@ -430,7 +435,7 @@ modNameInput.addEventListener("keydown", function (e) {
 modNameInput.addEventListener("focusout", function (e) {
     setTimeout(function () {
         autocompleteList.innerHTML = "";
-        document.getElementById("main").style.visibility = "visible";
+        document.getElementById("main").style.display = "grid";
     }, 300);
 });
 
@@ -442,15 +447,12 @@ document.addEventListener("keypress", function (e) {
 })
 
 const getFiles = "/v1/mods/{modId}/files?index={index}&pageSize=20";
-const getFile = "/v1/mods/{modId}/files/{fileId}";
+// const getFile = "/v1/mods/{modId}/files/{fileId}";
 const getModDescription = "/v1/mods/{modId}/description";
 var files = new Array();
 var numPages;
 var numFiles;
 function openTab(e) {
-    // TODO: funziona tutto correttamente, unico problema è che se durante il caricamento della tabella con i file si cambia tab e poi si torna subito nei nella tabella dei file,
-    //  vengono caricati i file della tabella precedente e di quella attuale
-
     switch (this.value) {
         case "description":
             if (selectedTab == 0) return;

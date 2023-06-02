@@ -57,7 +57,6 @@ function searchItem(e) {
 
 let currentFocus = -1;
 function autocomplete(arr) {
-    let div = document.getElementById('autocomplete-list');
     closeAllLists();
 
     if (arr.length == 0) {
