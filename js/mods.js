@@ -551,7 +551,7 @@ async function insertFilesTab() {
                     <tr>
                         <th scope="col">#</th>
                         <th scope="col">Name</th>
-                        <th scope="col">Upload date</th>
+                        <th class="gamefileDate" scope="col">Upload date</th>
                         <th scope="col">Game version</th>
                         <th scope="col">Mod loader</th>
                         <th scope="col"></th>
@@ -581,15 +581,15 @@ async function insertFilesTab() {
                 // console.log(tabContent);
 
                 tBodyContent.innerHTML += `<th scope="row">${i + 1}</th>`;
-                if (file['fileName'].length > 28) {
-                    tBodyContent.innerHTML += `
-                                <td class="gamefileName" data-tooltip="${file['fileName']}">${file['fileName'].substring(0, 28)}...</td>
-                            `;
-                } else {
-                    tBodyContent.innerHTML += `
-                                <td class="gamefileName" data-tooltip="${file['fileName']}">${file['fileName']}</td>
-                            `;
-                }
+                // if (file['fileName'].length > 28) {
+                //     tBodyContent.innerHTML += `
+                //                 <td class="gamefileName" data-tooltip="${file['fileName']}">${file['displayName'].substring(0, 28)}...</td>
+                //             `;
+                // } else {
+                tBodyContent.innerHTML += `
+                            <td class="gamefileName" data-tooltip="${file['fileName']}">${file['displayName']}</td>
+                        `;
+                // }
                 // console.log(tBodyContent);
 
                 let date = (new Date(file['fileDate']).getDate()) + "-" + months[(new Date(file['fileDate']).getMonth())] + "-" + (new Date(file['fileDate']).getFullYear());
@@ -641,12 +641,12 @@ function insertScreenshotsTab() {
 
         let screenshotsContainer = document.getElementById("screenshots-container");
         screenshots.forEach(element => {
+            console.log(element);
             screenshotsContainer.innerHTML += `<img src="${element['url']}" alt="${element['caption']}">`;
         });
     }
 }
 
-// TODO: aggiungere la creazione di una tabella
 async function search() {
     let main = document.getElementById('main');
     main.classList.remove("result");
@@ -656,7 +656,7 @@ async function search() {
     while (main.children.length > 1) {
         if (main.children[1].id == "pageSize-selector") main.removeChild(main.children[0]);
         else main.removeChild(main.children[1]);
-        
+
     }
 
     risultati.forEach(element => {

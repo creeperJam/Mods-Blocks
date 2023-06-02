@@ -99,15 +99,16 @@
 .card-image {
     display: flex;
     justify-content: center;
-
     padding: 15px;
     width: 100%;
     margin: 0;
     margin-bottom: 20px;
+    height: 338px;
 }
 
 .card-image > img {
-    width: 80%;
+    width: fit-content;
+    height: 100%;
 }
 /* 
 @media (max-width: 800px) {

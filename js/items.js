@@ -1,23 +1,23 @@
-let inputNomeBlocco = document.getElementById("nomeBlocco");
+let itemNameInput = document.getElementById("blockName");
 let span = document.getElementById("grassetto");
 // let descrizione =
 
-inputNomeBlocco.addEventListener("keyup", cercaBlocco, false);
-// inputNomeBlocco.addEventListener("submit", mostraInfoBlocco ,false);
+itemNameInput.addEventListener("keyup", searchItem, false);
+// itemNameInput.addEventListener("submit", mostraInfoBlocco ,false);
 const linkApiListBlocchi = "https://minecraft-api.vercel.app/api"; // API per la lista dei blocchi - restituisce un array contenenete tutti i blocchi in formato JSON
-// const linkWiki = "https://minecraft.fandom.com/wiki/itemName?so=search"; // "https://minecraft.fandom.com/wiki/NomeBlocco?so=search" - inutilizzabile
-const linkApiImmagini = "https://raw.githubusercontent.com/Sgambe33/MinecraftAPI/main/images/itemName.png"; // API per le immagini creata da Sgambe
+// const linkWiki = "https://minecraft.fandom.com/wiki/itemName?so=search"; // "https://minecraft.fandom.com/wiki/blockName?so=search" - inutilizzabile
+const imagesAPILink = "https://raw.githubusercontent.com/Sgambe33/MinecraftAPI/main/images/itemName.png"; // API per le immagini creata da Sgambe
 
 // Spiegazione link: https://minecraft.fandom.com/wiki/Iron_Ingot?so=search - inutilizzabile
-// Iron_Ingot --> nome del blocco (replace("itemName", nomeBlocco)) con "_" al posto degli spazi
+// Iron_Ingot --> nome del blocco (replace("itemName", blockName)) con "_" al posto degli spazi
 // ?so=search --> ricerca (FISSO)
 
 // Spiegazione link -> http://209.38.242.254:6969/x800/itemName.png
-// itemName --> nome del blocco (replace("itemName", nomeBlocco)) con "_" al posto degli spazi
+// itemName --> nome del blocco (replace("itemName", blockName)) con "_" al posto degli spazi
 
 // Link con spiegazione: https://minecraft-api.vercel.app/api/items?limit=25&page=2&sort=name&order=asc&fields=%5B%22name%22%2C%22image%22%2C%22stackSize%22%5D&stackSize=64
 // 
-// limit=25 --> numero massimo di risultati della ricerca
+// limit=25 --> numero massimo di results della ricerca
 // page=2 --> pagina della ricerca
 // sort=name --> ordina per nome
 // order=asc --> ordina in ordine crescente
@@ -25,92 +25,92 @@ const linkApiImmagini = "https://raw.githubusercontent.com/Sgambe33/MinecraftAPI
 // stackSize=64 --> numero di blocchi per stack
 
 const cercaBlocchi = "/items/";
-let vecchioInput = "";
-let risultati = new Array();
+let oldInput = "";
+let results = new Array();
 let data = fetch(linkApiListBlocchi + cercaBlocchi).then((response) => response.json()).then((data) => {
     return data;
 });
-function cercaBlocco(e) {
-    // risultati = new Array();
-    if (vecchioInput != inputNomeBlocco.value) {
-        let pattern = new RegExp('^' + inputNomeBlocco.value + '.*\\b', "i");
+function searchItem(e) {
+    // results = new Array();
+    if (oldInput != itemNameInput.value) {
+        let pattern = new RegExp('^' + itemNameInput.value + '.*\\b', "i");
         // await fetch(linkApiListBlocchi + cercaBlocchi).then((response) => response.json()).then((data) => {
         //     data.forEach(element => {
-        //         if (pattern.test(element['name']) == true) risultati.push(element);
+        //         if (pattern.test(element['name']) == true) results.push(element);
         //     });
         // });
-        // console.log(risultati);
-        risultati = new Array();
+        // console.log(results);
+        results = new Array();
         data.then(result => {
             result.forEach(element => {
-                if (pattern.test(element['name']) == true) risultati.push(element);
+                if (pattern.test(element['name']) == true) results.push(element);
             })
-            suggerimenti(risultati);
+            autocomplete(results);
         });
-        vecchioInput = inputNomeBlocco.value;
+        oldInput = itemNameInput.value;
     }
 
-    if (inputNomeBlocco.value.length == 0) {
+    if (itemNameInput.value.length == 0) {
         document.getElementById('autocomplete-list').innerHTML = "";
     }
 }
 
 let currentFocus = -1;
-function suggerimenti(arr) {
+function autocomplete(arr) {
     let div = document.getElementById('autocomplete-list');
     closeAllLists();
 
     if (arr.length == 0) {
-        let suggerimento = document.createElement('DIV'); // Div che contiene il suggerimento
-        let testoSuggerimento = document.createElement('span') // Span che contiene il testo del suggerimento
+        let div = document.createElement('DIV'); // Div che contiene il div
+        let span = document.createElement('span') // Span che contiene il testo del div
 
-        suggerimento.setAttribute("class", "autocomplete-item");
-        testoSuggerimento.setAttribute("style", "border-radius: 0 0 var(--border-radius) var(--border-radius)");
+        div.setAttribute("class", "autocomplete-item");
+        span.setAttribute("style", "border-radius: 0 0 var(--border-radius) var(--border-radius)");
 
-        suggerimento.innerHTML = "<p class='vuoto'></p> <p class='primaColonna'></p>";
-        testoSuggerimento.innerHTML += "<strong>Nessun elemento trovato per la query inserita</strong>";
+        div.innerHTML = "<p class='spacing'></p> <p class='firstColumn'></p>";
+        span.innerHTML += "<strong>Nessun elemento trovato per la query inserita</strong>";
 
-        suggerimento.addEventListener("click", closeAllLists, false);
+        div.addEventListener("click", closeAllLists, false);
 
-        suggerimento.appendChild(testoSuggerimento);
-        suggerimento.innerHTML += "<p class='vuoto'></p>";
-        div.appendChild(suggerimento);
+        div.appendChild(span);
+        div.innerHTML += "<p class='spacing'></p>";
+        document.getElementById("autocomplete-list").appendChild(div);
     } else {
         let n = arr.length > 10 ? 10 : arr.length;
         for (let i = 0; i < n; i++) {
-            let inizioStringa = arr[i]['name'].toLowerCase().indexOf(inputNomeBlocco.value.toLowerCase()); // Indice in cui inizia la stringa cercata
-            let suggerimento = document.createElement('DIV'); // Div che contiene il suggerimento
-            let testoSuggerimento = document.createElement('span') // Span che contiene il testo del suggerimento
+            let inizioStringa = arr[i]['name'].toLowerCase().indexOf(itemNameInput.value.toLowerCase()); // Indice in cui inizia la stringa cercata
+            let div = document.createElement('DIV'); // Div che contiene il div
+            let span = document.createElement('span') // Span che contiene il testo del div
 
             // Assegnazione attributi ai vari elementi
-            suggerimento.setAttribute("class", "autocomplete-item");;
-            testoSuggerimento.setAttribute("value", arr[i]['name']);
-            if (i == n - 1) testoSuggerimento.setAttribute("style", "border-radius: 0 0 var(--border-radius) var(--border-radius)");
-            else testoSuggerimento.setAttribute("style", "border-radius: 0");
+            div.setAttribute("class", "autocomplete-item");;
+            span.setAttribute("value", arr[i]['name']);
+            if (i == n - 1) span.setAttribute("style", "border-radius: 0 0 var(--border-radius) var(--border-radius)");
+            else span.setAttribute("style", "border-radius: 0");
 
-            suggerimento.innerHTML = "<p class='vuoto'></p> <p class='primaColonna' style='color: rgba(0, 0, 0, 0)'>Oggetto: </p>";
-            testoSuggerimento.innerHTML += arr[i]['name'].substr(0, inizioStringa);
-            testoSuggerimento.innerHTML += "<strong>" + arr[i]['name'].substr(inizioStringa, inputNomeBlocco.value.length) + "</strong>";
-            testoSuggerimento.innerHTML += arr[i]['name'].substr(inizioStringa + inputNomeBlocco.value.length);
-            // testoSuggerimento.innerHTML += "<input style='margin-top: 0; margin-bottom: 0; height: 75%; border-radius: 0' type='text' value='" + arr[i]['name'] + "' readonly>";
+            div.innerHTML = "<p class='spacing'></p> <p class='firstColumn' style='color: rgba(0, 0, 0, 0)'>Oggetto: </p>";
+            span.innerHTML += arr[i]['name'].substr(0, inizioStringa);
+            span.innerHTML += "<strong>" + arr[i]['name'].substr(inizioStringa, itemNameInput.value.length) + "</strong>";
+            span.innerHTML += arr[i]['name'].substr(inizioStringa + itemNameInput.value.length);
+            // span.innerHTML += "<input style='margin-top: 0; margin-bottom: 0; height: 75%; border-radius: 0' type='text' value='" + arr[i]['name'] + "' readonly>";
 
-            // testoSuggerimento.addEventListener("click", mostraInfoBlocco, false);
-            // testoSuggerimento.addEventListener("click", clickItem, false);
+            // span.addEventListener("click", mostraInfoBlocco, false);
+            // span.addEventListener("click", clickItem, false);
 
-            suggerimento.appendChild(testoSuggerimento);
-            suggerimento.innerHTML += "<p class='vuoto'></p>";
-            div.appendChild(suggerimento);
+            div.appendChild(span);
+            div.innerHTML += "<p class='spacing'></p>";
+            document.getElementById("autocomplete-list").appendChild(div);
         }
-        aggiungiEventListener();
+        addEventListeners();
     }
 }
 
-function aggiungiEventListener() {
+function addEventListeners() {
     let div = document.getElementById("autocomplete-list");
     let children = div.childNodes, n = children.length;
     for (let i = 0; i < n; i++) {
-        // children[i].children[2].addEventListener("keydown", mostraInfo);
-        children[i].children[2].addEventListener("click", mostraInfo);
+        // children[i].children[2].addEventListener("keydown", showItemInfo);
+        children[i].children[2].addEventListener("click", showItemInfo);
         children[i].children[2].addEventListener("click", closeAllLists);
         children[i].children[2].addEventListener("focusout", function (e) {
             closeAllLists();
@@ -123,25 +123,25 @@ function aggiungiEventListener() {
 const itemName = document.getElementById('itemName');
 const itemDescription = document.getElementById('itemDescription');
 const image = document.getElementById('itemImage');
-let oggettoJSON;
-async function mostraInfo(e) {
-    inputNomeBlocco.value = this.getAttribute('value');
+let JSONObject;
+async function showItemInfo(e) {
+    itemNameInput.value = this.getAttribute('value');
 
-    // console.log(risultati);
-    risultati.forEach(element => {
-        // console.log(element.name + " <-> " + inputNomeBlocco.value);
-        if (element.name == inputNomeBlocco.value) {
-            oggettoJSON = element;
-            // console.log(oggettoJSON);
+    // console.log(results);
+    results.forEach(element => {
+        // console.log(element.name + " <-> " + itemNameInput.value);
+        if (element.name == itemNameInput.value) {
+            JSONObject = element;
+            // console.log(JSONObject);
             return;
         }
     });
-    // console.log(oggettoJSON);
+    // console.log(JSONObject);
 
-    itemName.textContent = oggettoJSON['name'];
-    itemDescription.textContent = oggettoJSON['description'];
-    // image.src = linkApiImmagini.replace("itemName", itemName)
-    // image.src = linkApiImmagini.replace("itemName", itemName.textContent.replaceAll(" ", '_').toLowerCase());
+    itemName.textContent = JSONObject['name'];
+    itemDescription.textContent = JSONObject['description'];
+    // image.src = imagesAPILink.replace("itemName", itemName)
+    // image.src = imagesAPILink.replace("itemName", itemName.textContent.replaceAll(" ", '_').toLowerCase());
     image.style.width = "128px";
     image.style.height = "128px";
 
@@ -149,7 +149,7 @@ async function mostraInfo(e) {
         method: "GET"
     }
 
-    let url = URL.createObjectURL(await fetch(linkApiImmagini.replace("itemName", oggettoJSON['namespacedId']), options)
+    let url = URL.createObjectURL(await fetch(imagesAPILink.replace("itemName", JSONObject['namespacedId']), options)
         .then(response => {
             return response.blob()
         }));
@@ -158,8 +158,8 @@ async function mostraInfo(e) {
 
     document.getElementsByClassName("destra")[0].offsetHeight = document.getElementsByClassName("sinistra")[0].offsetHeight;
 
-    // console.log(oggettoJSON['namespacedId'])
-    // let response = await fetch(linkApiImmagini.replace("itemName", oggettoJSON['namespacedId']), options);
+    // console.log(JSONObject['namespacedId'])
+    // let response = await fetch(imagesAPILink.replace("itemName", JSONObject['namespacedId']), options);
     // if (response.status === 200) {
 
     //     const imageBlob = await response.blob();
@@ -174,7 +174,7 @@ async function mostraInfo(e) {
 
     //     // Actual resizing
     //     let temp = document.createElement("img");
-    //     temp.src = oggettoJSON['image'];
+    //     temp.src = JSONObject['image'];
     //     ctx.drawImage(temp, 0, 0, 128, 128);
 
     //     let dataurl = canvas.toDataURL();
@@ -198,34 +198,34 @@ function focus(element) {
     element.setAttribute("class", "spanFocus");
 }
 
-inputNomeBlocco.addEventListener("keyup", async function (e) {
+itemNameInput.addEventListener("keyup", async function (e) {
     let divs = document.getElementById('autocomplete-list').children;
     // console.log(divs[0].children)
-    let tastoPremuto = e.code;
+    let pressedKey = e.code;
 
-    // console.log(tastoPremuto);
+    // console.log(pressedKey);
 
-    if (tastoPremuto == "ArrowDown") {
+    if (pressedKey == "ArrowDown") {
         if (currentFocus > -1) noFocus(divs[currentFocus].children[2]);
         if (currentFocus < 9) currentFocus++;
         focus(divs[currentFocus].children[2]);
-    } else if (tastoPremuto == "ArrowUp") {
+    } else if (pressedKey == "ArrowUp") {
         if (currentFocus > -1) noFocus(divs[currentFocus].children[2]);
         if (currentFocus > 0) currentFocus--;
         focus(divs[currentFocus].children[2]);
-    } else if (tastoPremuto == "Enter") {
+    } else if (pressedKey == "Enter") {
         e.preventDefault();
-        // console.log("INVIO if-case - " + tastoPremuto)
+        // console.log("INVIO if-case - " + pressedKey)
         // console.log(divs[currentFocus].children[2].value);
-        inputNomeBlocco.value = divs[currentFocus].children[2].getAttribute('value');
+        itemNameInput.value = divs[currentFocus].children[2].getAttribute('value');
         currentFocus = -1;
         closeAllLists();
     } else {
-        // console.log("Tasto premuto - " + tastoPremuto)
+        // console.log("Tasto premuto - " + pressedKey)
     }
 })
 
-document.getElementById("nomeBlocco").addEventListener("focusout", function (e) {
+document.getElementById("blockName").addEventListener("focusout", function (e) {
     setTimeout(closeAllLists, 500);
 });
 

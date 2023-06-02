@@ -324,13 +324,6 @@ span {
     width: 100%;
 }
 
-@media (max-width: 768px) {
-    #page-selector {
-        width: 80%;
-        justify-content: center;
-    }
-}
-
 .page-button {
     display: flex;
     margin: 0;
@@ -501,5 +494,11 @@ progress {
     .modResultContainer {
         grid-template-rows: 0.5fr 0.5fr 0.5fr 0.5fr;
         grid-template-columns: 100px 1fr;
+    }
+}
+
+@media (max-width: 880px) {
+    .gamefileDate {
+        display: none;
     }
 }

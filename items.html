@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>API di Minecraft</title>
+    <title>API di Minecraft e mod</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
 
     <link rel="stylesheet" href="./css/items.css">
@@ -15,7 +15,7 @@
 <body>
     <nav>
         <ul>
-            <li id="webApp-name"><strong>Brand</strong></li>
+            <li id="webApp-name"><strong>Mods & Blocks</strong></li>
         </ul>
         <ul id="nav-links">
             <li id="index"><a href="./index.html">Home</a></li>
@@ -26,13 +26,13 @@
 
     <form action="" id="wrapper">
         <div class="wrapper-input">
-            <div class="inputGioco">
-                <p class="vuoto"></p>
-                <p for="nomeBlocco" class="primaColonna">Oggetto: </p>
-                <label for="nomeBlocco" title="Nome blocco"></label>
-                <input type="text" id="nomeBlocco" name="nomeBlocco" title="Nome blocco"
-                    placeholder="Selezionare l'opzione desiderata" autocomplete="off">
-                <p class="vuoto"></p>
+            <div class="itemInput">
+                <p class="spacing"></p>
+                <p for="blockName" class="firstColumn">Item: </p>
+                <label for="blockName" title="Block name"></label>
+                <input type="text" id="blockName" name="blockName" title="Block name"
+                    placeholder="Start typing to show autocompletion" autocomplete="off">
+                <p class="spacing"></p>
             </div>
         </div>
         <div id="autocomplete-list" class="autocomplete-items">
@@ -44,13 +44,13 @@
 
     <!-- <iframe src="https://minecraft.fandom.com/wiki/Iron_Ingot?so=search" frameborder="0" style="width: 100%; height: 10rem"></iframe> Risultato finale, solo informazioni -->
 
-    <div class="wrapper-risultato">
-        <div class="sinistra">
+    <div class="wrapper-result">
+        <div class="left">
             <h3 id="itemName"></h3>
             <p id="itemDescription"></p>
         </div>
-        <div class="destra">
-            <img id="itemImage" title="immagine oggetto scelto" src="./immagini/trasparente.png">
+        <div class="right">
+            <img id="itemImage" title="Chosen item image" src="./immagini/trasparente.png">
         </div>
     </div>
 

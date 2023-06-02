@@ -13,6 +13,8 @@
 .wrapper-input>div>*,
 #autocomplete-list>div>* {
   display: table-cell;
+  margin-bottom: 0;
+  border-radius: var(--border-radius) var(--border-radius) 0 0;
 }
 
 /* .wrapper-input {
@@ -26,19 +28,19 @@
   width: 100%;
 }
 
-.vuoto {
+.spacing {
   width: 15%;
 }
 
-.primaColonna {
+.firstColumn {
   width: 5%;
 }
 
-.wrapper-risultato>*>* {
+.wrapper-result>*>* {
     margin-bottom: 15px !important;
 }
 
-.wrapper-risultato {
+.wrapper-result {
     position: absolute !important;
     z-index: 5 !important;
     left: 50%;
@@ -47,7 +49,7 @@
     width: 100%;
 }
 
-.sinistra {
+.left {
     display: flex;
     position: inherit;
     justify-content: flex-start;
@@ -56,7 +58,7 @@
     width: 35%;
 }
 
-.destra {
+.right {
     display: flex;
     position: inherit;
     justify-content: center;
@@ -67,7 +69,7 @@
     align-content: center;
 }
 
-#immagineOggetto {
+#itemImage {
     position: absolute;
     z-index: inherit;
     /* height: 128px; */
