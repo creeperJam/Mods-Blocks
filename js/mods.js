@@ -681,8 +681,8 @@ async function search() {
     // main.innerHTML = "";
 
     while (main.children.length > 1) {
-        if (main.children[1].id == "pageSize-selector") main.removeChild(main.children[0]);
-        else main.removeChild(main.children[1]);
+        if (main.children[0].id == "pageSize-selector") main.removeChild(main.children[1]);
+        else main.removeChild(main.children[0]);
 
     }
 
